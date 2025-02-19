@@ -1,0 +1,260 @@
+{
+  "user": {
+    "name": "Abdullah Jaja",
+    "image": "user_image.png"
+  },
+  "vitals": [
+    {
+      "id": 1,
+      "vital_key": "update_drug_allergy_list",
+      "value": "No Allergies",
+      "unit": ""
+    },
+    {
+      "id": 2,
+      "vital_key": "update_food_allergy_list",
+      "value": "Peanuts",
+      "unit": ""
+    },
+    {
+      "id": 3,
+      "vital_key": "update_substance_allergy_list",
+      "value": "Dust",
+      "unit": ""
+    },
+    {
+      "id": 4,
+      "vital_key": "update_bmi",
+      "value": "24.5",
+      "unit": "kg/m²"
+    },
+    {
+      "id": 5,
+      "vital_key": "update_blood_pressure",
+      "value": "120/80",
+      "unit": "mmHg"
+    },
+    {
+      "id": 6,
+      "vital_key": "update_blood_sugar",
+      "value": "95",
+      "unit": "mg/dL"
+    },
+    {
+      "id": 7,
+      "vital_key": "update_body_mass",
+      "value": "70",
+      "unit": "kg"
+    },
+    {
+      "id": 8,
+      "vital_key": "update_waist_circumference",
+      "value": "85",
+      "unit": "cm"
+    },
+    {
+      "id": 9,
+      "vital_key": "update_blood_type",
+      "value": "O+",
+      "unit": ""
+    },
+    {
+      "id": 10,
+      "vital_key": "update_user_health_conditions",
+      "value": "No conditions",
+      "unit": ""
+    },
+    {
+      "id": 11,
+      "vital_key": "update_weight",
+      "value": "75",
+      "unit": "kg"
+    },
+    {
+      "id": 12,
+      "vital_key": "update_height",
+      "value": "175",
+      "unit": "cm"
+    },
+    {
+      "id": 13,
+      "vital_key": "update_family_medical_history",
+      "value": "No history",
+      "unit": ""
+    },
+    {
+      "id": 14,
+      "vital_key": "view_bmi",
+      "value": "24.5",
+      "unit": "kg/m²"
+    },
+    {
+      "id": 15,
+      "vital_key": "view_blood_pressure",
+      "value": "120/80",
+      "unit": "mmHg"
+    },
+    {
+      "id": 16,
+      "vital_key": "view_blood_sugar",
+      "value": "95",
+      "unit": "mg/dL"
+    },
+    {
+      "id": 17,
+      "vital_key": "view_body_mass",
+      "value": "70",
+      "unit": "kg"
+    },
+    {
+      "id": 18,
+      "vital_key": "view_waist_circumference",
+      "value": "85",
+      "unit": "cm"
+    },
+    {
+      "id": 19,
+      "vital_key": "view_blood_type",
+      "value": "O+",
+      "unit": ""
+    },
+    {
+      "id": 20,
+      "vital_key": "view_user_health_conditions",
+      "value": "No conditions",
+      "unit": ""
+    },
+    {
+      "id": 21,
+      "vital_key": "view_weight",
+      "value": "75",
+      "unit": "kg"
+    },
+    {
+      "id": 22,
+      "vital_key": "view_height",
+      "value": "175",
+      "unit": "cm"
+    },
+    {
+      "id": 23,
+      "vital_key": "view_family_medical_history",
+      "value": "No history",
+      "unit": ""
+    },
+    {
+      "id": 24,
+      "vital_key": "view_doctor_allergy_list",
+      "value": "None",
+      "unit": ""
+    },
+    {
+      "id": 25,
+      "vital_key": "view_user_allergy_list",
+      "value": "Peanuts",
+      "unit": ""
+    },
+    {
+      "id": 26,
+      "vital_key": "view_health_id",
+      "value": "1234567890",
+      "unit": ""
+    },
+    {
+      "id": 27,
+      "vital_key": "view_location_health_facility",
+      "value": "King Saud Medical City",
+      "unit": ""
+    },
+    {
+      "id": 28,
+      "vital_key": "view_previous_medications",
+      "value": "Paracetamol",
+      "unit": ""
+    },
+    {
+      "id": 29,
+      "vital_key": "view_current_medications",
+      "value": "Metformin",
+      "unit": ""
+    },
+    {
+      "id": 30,
+      "vital_key": "view_general_vaccinations",
+      "value": "Covid-19, Flu",
+      "unit": ""
+    },
+    {
+      "id": 31,
+      "vital_key": "view_children_vaccinations",
+      "value": "Polio, Measles",
+      "unit": ""
+    },
+    {
+      "id": 32,
+      "vital_key": "view_doctor_health_conditions",
+      "value": "Hypertension",
+      "unit": ""
+    },
+    {
+      "id": 33,
+      "vital_key": "view_previous_medications_list",
+      "value": "Ibuprofen",
+      "unit": ""
+    },
+    {
+      "id": 34,
+      "vital_key": "view_surgeries_procedures",
+      "value": "Appendectomy",
+      "unit": ""
+    },
+    {
+      "id": 35,
+      "vital_key": "book_virtual_appointment",
+      "value": "Upcoming",
+      "unit": ""
+    },
+    {
+      "id": 36,
+      "vital_key": "book_in_person_appointment",
+      "value": "Scheduled",
+      "unit": ""
+    },
+    {
+      "id": 37,
+      "vital_key": "reschedule_in_person_appointment",
+      "value": "Pending",
+      "unit": ""
+    },
+    {
+      "id": 38,
+      "vital_key": "cancel_in_person_appointment",
+      "value": "Cancelled",
+      "unit": ""
+    },
+    {
+      "id": 39,
+      "vital_key": "reschedule_virtual_appointment",
+      "value": "Rescheduled",
+      "unit": ""
+    },
+    {
+      "id": 40,
+      "vital_key": "cancel_virtual_appointment",
+      "value": "Cancelled",
+      "unit": ""
+    },
+    {
+      "id": 41,
+      "vital_key": "view_visits",
+      "value": "3 visits",
+      "unit": ""
+    },
+    {
+      "id": 42,
+      "vital_key": "view_lab_test_results",
+      "value": "Normal",
+      "unit": ""
+    }
+  ]
+}
