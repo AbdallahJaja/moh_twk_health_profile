@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MOH Services</title>
+  <title>MOH Services - Home</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
@@ -14,24 +14,44 @@
   <!-- Top Navigation Bar -->
   <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-      <a class="navbar-brand" href="#">MOH Services</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <!-- Home link in brand -->
+      <a class="navbar-brand" href="index.html">MOH Services</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" 
+              aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
          <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="collapse navbar-collapse" id="navContent">
          <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="updateVitals.html">Vitals</a></li>
+            <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="modern_vitals.html">Vitals</a></li>
             <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
             <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+            <!-- Language Switch Button -->
+            <li class="nav-item">
+              <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+            </li>
          </ul>
       </div>
     </div>
   </nav>
-  
+
   <div class="container text-center">
     <h2 class="mt-5">Welcome to MOH Services</h2>
     <p>Select a service from the menu above.</p>
   </div>
+
+  <!-- Language switch script -->
+  <script>
+    const currentLang = localStorage.getItem("lang") || "en";
+    document.documentElement.lang = currentLang;
+    const langSwitchBtn = document.getElementById("langSwitchBtn");
+    langSwitchBtn.textContent = currentLang === "en" ? "العربية" : "English";
+    langSwitchBtn.addEventListener("click", function() {
+      const newLang = currentLang === "en" ? "ar" : "en";
+      localStorage.setItem("lang", newLang);
+      location.reload();
+    });
+  </script>
   
   <!-- Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

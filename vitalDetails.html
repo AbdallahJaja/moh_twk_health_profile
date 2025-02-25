@@ -14,183 +14,71 @@
     body { background: #f8f9fa; }
     .floating-back { position: fixed; top: 80px; left: 10px; z-index: 1100; }
     .action-toolbar { margin-bottom: 15px; }
-    .select-mode .select-col { display: inline-block; }
-    .non-select-mode .select-col { display: none; }
+    .select-mode .select-col { display: inline-block !important; }
+    .non-select-mode .select-col { display: none !important; }
   </style>
-  <script src="node_modules/eruda/eruda.js"></script>
-  <script>eruda.init();</script>
+  
   <script src="twk_helper.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/apis.js"></script>
+  
   <!-- Bootstrap Bundle & AOS JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init();
-
-    window.addEventListener("load", function() {
-      
-      if (window.eruda) {
-        eruda.init();
-      } 
-  
-      window.onerror = function(msg, url, line, col, error) {
-        console.log("Global error handler:", { msg, url, line, col, error });
-        alert("Global error handler:", { msg, url, line, col, error });
-      };
-      const vitalDataStr = sessionStorage.getItem("selectedVital");
-      if (!vitalDataStr) {
-        alert("!vitalDataSt")
-        document.body.innerHTML = "<div class='container mt-5'><h3>No vital selected.</h3><button class='btn btn-primary' onclick='window.history.back()'>Back</button></div>";
-        return;
-      }
-      alert("vitalDataSt")
-      const vital = JSON.parse(vitalDataStr);
-      const lang = AppSettings && AppSettings.language ? AppSettings.language : "en";
-      const vitalName = VITALS_TRANSLATION[vital.vital_key]?.[lang] || vital.vital_key;
-      document.getElementById("vitalTitle").textContent = vitalName;
-      
-      // vital.value is assumed to be an array
-      let vitalItems = Array.isArray(vital.value) ? vital.value : [];
-      let selectMode = false;
-      
-      const vitalListEl = document.getElementById("vitalList");
-      const toggleSelectBtn = document.getElementById("toggleSelectBtn");
-      const copyAllBtn = document.getElementById("copyAllBtn");
-      const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
-      const editSelectedBtn = document.getElementById("editSelectedBtn");
-      const cancelSelectBtn = document.getElementById("cancelSelectBtn");
-      
-      function renderList() {
-        alert("renderList")
-        vitalListEl.innerHTML = "";
-        vitalItems.forEach((item, index) => {
-          const row = document.createElement("div");
-          row.className = "list-group-item d-flex justify-content-between align-items-center";
-          
-          // Checkbox for select mode
-          const checkboxDiv = document.createElement("div");
-          checkboxDiv.className = "form-check select-col me-2";
-          checkboxDiv.style.display = selectMode ? "block" : "none";
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.className = "form-check-input";
-          checkbox.dataset.index = index;
-          checkboxDiv.appendChild(checkbox);
-          
-          // Row text
-          const textSpan = document.createElement("span");
-          textSpan.textContent = item;
-          
-          // Action buttons for individual row
-          const btnGroup = document.createElement("div");
-          btnGroup.className = "btn-group";
-          
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "btn btn-secondary btn-sm";
-          copyBtn.textContent = LANG_EN.copy;
-          copyBtn.onclick = () => {
-            navigator.clipboard.writeText(item)
-              .then(() => new bootstrap.Toast(document.getElementById("copyToast")).show())
-              .catch(err => console.error("Copy failed", err));
-          };
-          btnGroup.appendChild(copyBtn);
-          
-          row.appendChild(checkboxDiv);
-          row.appendChild(textSpan);
-          row.appendChild(btnGroup);
-          
-          vitalListEl.appendChild(row);
-        });
-      }
-      
-      renderList();
-      
-      // Toolbar button behavior
-      toggleSelectBtn.addEventListener("click", function() {
-        selectMode = true;
-        toggleSelectBtn.style.display = "none";
-        copyAllBtn.style.display = "none";
-        deleteSelectedBtn.style.display = "inline-block";
-        editSelectedBtn.style.display = "inline-block";
-        cancelSelectBtn.style.display = "inline-block";
-        renderList();
-      });
-      
-      cancelSelectBtn.addEventListener("click", function() {
-        selectMode = false;
-        toggleSelectBtn.style.display = "inline-block";
-        copyAllBtn.style.display = "inline-block";
-        deleteSelectedBtn.style.display = "none";
-        editSelectedBtn.style.display = "none";
-        cancelSelectBtn.style.display = "none";
-        const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
-        checkboxes.forEach(chk => chk.checked = false);
-        renderList();
-      });
-      
-      copyAllBtn.addEventListener("click", function() {
-        const allText = vitalItems.join(", ");
-        navigator.clipboard.writeText(allText)
-          .then(() => new bootstrap.Toast(document.getElementById("copyToast")).show())
-          .catch(err => console.error("Copy all failed", err));
-      });
-      
-      deleteSelectedBtn.addEventListener("click", function() {
-        const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
-        const indicesToDelete = [];
-        checkboxes.forEach(chk => {
-          if (chk.checked) {
-            indicesToDelete.push(parseInt(chk.dataset.index));
-          }
-        });
-        vitalItems = vitalItems.filter((item, index) => !indicesToDelete.includes(index));
-        const updatedVital = Object.assign({}, vital, { value: vitalItems });
-        sessionStorage.setItem("selectedVital", JSON.stringify(updatedVital));
-        renderList();
-      });
-      
-      editSelectedBtn.addEventListener("click", function() {
-        const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
-        let selectedCount = 0;
-        checkboxes.forEach(chk => { if (chk.checked) selectedCount++; });
-        if (selectedCount === 0) {
-          alert("No items selected.");
-          return;
-        }
-        new bootstrap.Modal(document.getElementById("multiEditModal")).show();
-      });
-      
-      document.getElementById("applyMultiEditBtn").addEventListener("click", function() {
-        const newVal = document.getElementById("multiEditInput").value.trim();
-        if (newVal === "") {
-          document.getElementById("multiEditError").textContent = "Please enter a valid value.";
-          return;
-        }
-        const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
-        const indicesToEdit = [];
-        checkboxes.forEach(chk => {
-          if (chk.checked) indicesToEdit.push(parseInt(chk.dataset.index));
-        });
-        vitalItems = vitalItems.map((item, index) => indicesToEdit.includes(index) ? newVal : item);
-        const updatedVital = Object.assign({}, vital, { value: vitalItems });
-        sessionStorage.setItem("selectedVital", JSON.stringify(updatedVital));
-        new bootstrap.Modal(document.getElementById("multiEditModal")).hide();
-        renderList();
-      });
-      
-      function calculateDigitalTwin(items) {
-        const insight = `You have ${items.length} entries. Regular review aids in preventive and predictive care.`;
-        const twinEl = document.getElementById("twin-insights");
-        if(twinEl) {
-          twinEl.textContent = insight;
-        }
-      }
-      
-      calculateDigitalTwin(vitalItems);
-    });
   </script>
+</head>
+<body>
+  <!-- Top Navigation Bar (Blue Primary) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">MOH Services</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" 
+              aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navContent">
+         <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
+            <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
+            <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+            <li class="nav-item">
+              <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+            </li>
+         </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Back Button -->
+  <button class="btn btn-outline-primary floating-back" onclick="window.history.back();">Back</button>
+  
+  <div class="container mt-5 pt-5" data-aos="fade-up">
+    <h3 id="vitalTitle" class="mb-4">Loading Vital...</h3>
+    
+    <!-- Action Toolbar -->
+    <div id="actionToolbar" class="d-flex align-items-center mb-3 non-select-mode">
+      <button id="toggleSelectBtn" class="btn btn-outline-secondary me-2">Select</button>
+      <button id="copyAllBtn" class="btn btn-secondary me-2">Copy All</button>
+      <button id="deleteSelectedBtn" class="btn btn-danger me-2" style="display:none;">Delete Selected</button>
+      <button id="editSelectedBtn" class="btn btn-primary me-2" style="display:none;">Edit Selected</button>
+      <button id="cancelSelectBtn" class="btn btn-outline-secondary" style="display:none;">Cancel</button>
+    </div>
+    
+    <!-- Vital List -->
+    <div id="vitalList" class="list-group">
+      <!-- List items rendered here -->
+    </div>
+    
+    <!-- Digital Twin Section -->
+    <div id="twinContainer" class="mt-4 p-3 border rounded bg-white shadow-sm">
+      <h5>Digital Twin Insights</h5>
+      <div id="twin-insights">Calculating insights...</div>
+    </div>
+  </div>
   
   <!-- Multi-Edit Modal -->
   <div class="modal fade" id="multiEditModal" tabindex="-1" aria-labelledby="multiEditModalLabel" aria-hidden="true">
@@ -219,5 +107,224 @@
       <div class="toast-body">Copied to clipboard!</div>
     </div>
   </div>
+  
+  <!-- Language switch script -->
+  <script>
+    const currentLang = localStorage.getItem("lang") || "en";
+    document.documentElement.lang = currentLang;
+    const langSwitchBtn = document.getElementById("langSwitchBtn");
+    if(langSwitchBtn) {
+      langSwitchBtn.textContent = currentLang === "en" ? "العربية" : "English";
+      langSwitchBtn.addEventListener("click", function() {
+        const newLang = currentLang === "en" ? "ar" : "en";
+        localStorage.setItem("lang", newLang);
+        location.reload();
+      });
+    }
+  </script>
+  
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    window.addEventListener("load", function() {
+      console.log("VitalDetails page loaded.");
+      
+      const vitalDataStr = sessionStorage.getItem("selectedVital");
+      if (!vitalDataStr) {
+        console.error("selectedVital not found in sessionStorage.");
+        document.body.innerHTML = "<div class='container mt-5'><h3>No vital selected.</h3><button class='btn btn-primary' onclick='window.history.back()'>Back</button></div>";
+        return;
+      }
+      console.log("Selected vital data:", vitalDataStr);
+      
+      const vital = JSON.parse(vitalDataStr);
+      console.log("Parsed vital:", vital);
+      
+      const lang = (AppSettings && AppSettings.language) ? AppSettings.language : "en";
+      console.log("Language:", lang);
+      
+      const vitalTitleElem = document.getElementById("vitalTitle");
+      if (!vitalTitleElem) {
+        console.error("Element with id 'vitalTitle' not found.");
+      } else {
+        const vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][lang]) || vital.vital_key;
+        vitalTitleElem.textContent = vitalName;
+        console.log("Vital title set to:", vitalTitleElem.textContent);
+      }
+      
+      const vitalListEl = document.getElementById("vitalList");
+      if (!vitalListEl) {
+        console.error("Element with id 'vitalList' not found.");
+      }
+      
+      const twinEl = document.getElementById("twin-insights");
+      if (!twinEl) {
+        console.error("Element with id 'twin-insights' not found.");
+      }
+      
+      let vitalItems = Array.isArray(vital.value) ? vital.value : [];
+      console.log("Vital items:", vitalItems);
+      let selectMode = false;
+      
+      const toggleSelectBtn = document.getElementById("toggleSelectBtn");
+      const copyAllBtn = document.getElementById("copyAllBtn");
+      const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+      const editSelectedBtn = document.getElementById("editSelectedBtn");
+      const cancelSelectBtn = document.getElementById("cancelSelectBtn");
+      
+      if (!toggleSelectBtn) console.error("toggleSelectBtn not found.");
+      if (!cancelSelectBtn) console.error("cancelSelectBtn not found.");
+      
+      function renderList() {
+        if (!vitalListEl) return;
+        vitalListEl.innerHTML = "";
+        vitalItems.forEach((item, index) => {
+          const row = document.createElement("div");
+          row.className = "list-group-item d-flex justify-content-between align-items-center";
+          
+          const checkboxDiv = document.createElement("div");
+          checkboxDiv.className = "form-check select-col me-2";
+          checkboxDiv.style.display = selectMode ? "block" : "none";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.className = "form-check-input";
+          checkbox.dataset.index = index;
+          checkboxDiv.appendChild(checkbox);
+          
+          const textSpan = document.createElement("span");
+          textSpan.textContent = item;
+          
+          const btnGroup = document.createElement("div");
+          btnGroup.className = "btn-group";
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "btn btn-secondary btn-sm";
+          copyBtn.textContent = LANG_EN.copy;
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(item)
+              .then(() => {
+                console.log("Copied item:", item);
+                new bootstrap.Toast(document.getElementById("copyToast")).show();
+              })
+              .catch(err => console.error("Copy failed", err));
+          };
+          btnGroup.appendChild(copyBtn);
+          
+          row.appendChild(checkboxDiv);
+          row.appendChild(textSpan);
+          row.appendChild(btnGroup);
+          
+          vitalListEl.appendChild(row);
+        });
+      }
+      
+      renderList();
+      
+      if (toggleSelectBtn) {
+        toggleSelectBtn.addEventListener("click", function() {
+          selectMode = true;
+          toggleSelectBtn.style.display = "none";
+          copyAllBtn.style.display = "none";
+          deleteSelectedBtn.style.display = "inline-block";
+          editSelectedBtn.style.display = "inline-block";
+          cancelSelectBtn.style.display = "inline-block";
+          renderList();
+          console.log("Select mode activated.");
+        });
+      }
+      
+      if (cancelSelectBtn) {
+        cancelSelectBtn.addEventListener("click", function() {
+          selectMode = false;
+          toggleSelectBtn.style.display = "inline-block";
+          copyAllBtn.style.display = "inline-block";
+          deleteSelectedBtn.style.display = "none";
+          editSelectedBtn.style.display = "none";
+          cancelSelectBtn.style.display = "none";
+          const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
+          checkboxes.forEach(chk => chk.checked = false);
+          renderList();
+          console.log("Select mode canceled.");
+        });
+      }
+      
+      if (copyAllBtn) {
+        copyAllBtn.addEventListener("click", function() {
+          const allText = vitalItems.join(", ");
+          navigator.clipboard.writeText(allText)
+            .then(() => {
+              console.log("Copied all items.");
+              new bootstrap.Toast(document.getElementById("copyToast")).show();
+            })
+            .catch(err => console.error("Copy all failed", err));
+        });
+      }
+      
+      if (deleteSelectedBtn) {
+        deleteSelectedBtn.addEventListener("click", function() {
+          const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
+          const indicesToDelete = [];
+          checkboxes.forEach(chk => {
+            if (chk.checked) {
+              indicesToDelete.push(parseInt(chk.dataset.index));
+            }
+          });
+          console.log("Indices to delete:", indicesToDelete);
+          vitalItems = vitalItems.filter((item, index) => !indicesToDelete.includes(index));
+          const updatedVital = Object.assign({}, vital, { value: vitalItems });
+          sessionStorage.setItem("selectedVital", JSON.stringify(updatedVital));
+          renderList();
+          console.log("Deleted selected items.");
+        });
+      }
+      
+      if (editSelectedBtn) {
+        editSelectedBtn.addEventListener("click", function() {
+          const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
+          let selectedCount = 0;
+          checkboxes.forEach(chk => { if (chk.checked) selectedCount++; });
+          if (selectedCount === 0) {
+            alert("No items selected.");
+            return;
+          }
+          new bootstrap.Modal(document.getElementById("multiEditModal")).show();
+          console.log("Editing selected items.");
+        });
+      }
+      
+      document.getElementById("applyMultiEditBtn").addEventListener("click", function() {
+        const newVal = document.getElementById("multiEditInput").value.trim();
+        if (newVal === "") {
+          document.getElementById("multiEditError").textContent = "Please enter a valid value.";
+          return;
+        }
+        const checkboxes = document.querySelectorAll(".select-col input[type='checkbox']");
+        const indicesToEdit = [];
+        checkboxes.forEach(chk => {
+          if (chk.checked) indicesToEdit.push(parseInt(chk.dataset.index));
+        });
+        console.log("Indices to edit:", indicesToEdit);
+        vitalItems = vitalItems.map((item, index) => indicesToEdit.includes(index) ? newVal : item);
+        const updatedVital = Object.assign({}, vital, { value: vitalItems });
+        sessionStorage.setItem("selectedVital", JSON.stringify(updatedVital));
+        new bootstrap.Modal(document.getElementById("multiEditModal")).hide();
+        renderList();
+        console.log("Edited selected items.");
+      });
+      
+      function calculateDigitalTwin(items) {
+        const insight = `You have ${items.length} entries. Regular review aids in preventive and predictive care.`;
+        const twinEl = document.getElementById("twin-insights");
+        if (twinEl) {
+          twinEl.textContent = insight;
+          console.log("Digital twin insight set to:", insight);
+        } else {
+          console.error("twin-insights element not found.");
+        }
+      }
+      
+      calculateDigitalTwin(vitalItems);
+    });
+  </script>
 </body>
 </html>

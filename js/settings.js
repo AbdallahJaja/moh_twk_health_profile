@@ -7,7 +7,7 @@ window.AppSettings = window.AppSettings || {
   init: function() {
     // TWK.getDeviceInfo()
     //   .then((deviceInfo) => {
-        AppSettings.theme ="light" ;//deviceInfo.theme || "light";
+        AppSettings.theme ="dark" ;//deviceInfo.theme || "light";
         AppSettings.language = localStorage.getItem("lang") || "en";//deviceInfo.language || "en";
         AppSettings.textDirection = AppSettings.language === "ar" ? "rtl" : "ltr";
         document.body.classList.add(AppSettings.theme);

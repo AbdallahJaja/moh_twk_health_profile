@@ -39,7 +39,7 @@ async function loginByTWK() {
 async function fetchVitals() {
   if (USE_MOCK) {
     try {
-      const response = await fetch("mock_vitals.json");
+      const response = await fetch("js/mock_vitals.json");
       return await response.json();
     } catch (error) {
       console.error("Error fetching mock vitals", error);
@@ -63,7 +63,7 @@ async function fetchVitals() {
 async function fetchVisits() {
   if (USE_MOCK) {
     try {
-      const response = await fetch("mock_visits.json");
+      const response = await fetch("js/mock_visits.json");
       return await response.json();
     } catch (error) {
       console.error("Error fetching mock visits", error);
