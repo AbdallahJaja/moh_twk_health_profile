@@ -1,0 +1,288 @@
+{
+  "user": {
+    "name": "Abdullah Jaja",
+    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABFElEQVR4Xu3XwQ3CMAwF0PH+/68d7RFrR1LwChVSRb+dv7J3rjIc4JwnEkSJEiRIkySXjH67ADwwDx58r3uKBlzrL4vPjZkAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECPwS/CwD+WSJb19DoAwIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECPgQ8xAw4t1D8ZfB5QKj6X7TUMIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBDoD/AAN+SgLdlsS+VAAAAAElFTkSuQmCC"
+  },
+  "vitals": [
+    {
+      "id": 1,
+      "vital_key": "drug_allergy_list",
+      "value": ["Penicillin", "Sulfa Drugs"],
+      "type": "list",
+      "description": "A list of drugs the user is allergic to. Essential for safe medication prescriptions.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/drug"
+    },
+    {
+      "id": 2,
+      "vital_key": "food_allergy_list",
+      "value": ["Peanuts", "Shellfish"],
+      "type": "list",
+      "description": "A list of food items the user is allergic to, which can cause severe reactions.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/food"
+    },
+    {
+      "id": 3,
+      "vital_key": "substance_allergy_list",
+      "value": ["Pollen", "Dust"],
+      "type": "list",
+      "description": "Environmental substances that trigger allergic reactions.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/environmental"
+    },
+    {
+      "id": 4,
+      "vital_key": "bmi",
+      "value": 24.5,
+      "unit": "kg/m²",
+      "type": "numeric",
+      "description": "Body Mass Index measures body fat based on height and weight.",
+      "more_info": "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight"
+    },
+    {
+      "id": 5,
+      "vital_key": "blood_pressure",
+      "value": "120/80",
+      "unit": "mmHg",
+      "type": "string",
+      "description": "Blood pressure measurement indicating systolic and diastolic values.",
+      "more_info": "https://www.heart.org/en/health-topics/high-blood-pressure"
+    },
+    {
+      "id": 6,
+      "vital_key": "blood_sugar",
+      "value": 95,
+      "unit": "mg/dL",
+      "type": "numeric",
+      "description": "Blood sugar level used to monitor metabolic health.",
+      "more_info": "https://www.diabetes.org/diabetes"
+    },
+    {
+      "id": 7,
+      "vital_key": "body_mass",
+      "value": 70,
+      "unit": "kg",
+      "type": "numeric",
+      "description": "Total body mass including fat, muscle, and bone.",
+      "more_info": "https://www.nhlbi.nih.gov/health/educational/lose_wt/index.htm"
+    },
+    {
+      "id": 8,
+      "vital_key": "waist_circumference",
+      "value": 85,
+      "unit": "cm",
+      "type": "numeric",
+      "description": "Indicator of abdominal fat; high values suggest increased health risks.",
+      "more_info": "https://www.cdc.gov/healthyweight/assessing/index.html"
+    },
+    {
+      "id": 9,
+      "vital_key": "blood_type",
+      "value": "O+",
+      "type": "string",
+      "description": "The user's blood type; important for transfusions and emergencies.",
+      "more_info": "https://www.redcrossblood.org/donate-blood/blood-types.html"
+    },
+    {
+      "id": 10,
+      "vital_key": "user_health_conditions",
+      "value": ["Hypertension"],
+      "type": "list",
+      "description": "Health conditions diagnosed or self-reported by the user.",
+      "more_info": "https://www.moh.gov.sa/health/conditions"
+    },
+    {
+      "id": 11,
+      "vital_key": "weight",
+      "value": 75,
+      "unit": "kg",
+      "type": "numeric",
+      "description": "Current body weight.",
+      "more_info": "https://www.cdc.gov/healthyweight/index.html"
+    },
+    {
+      "id": 12,
+      "vital_key": "height",
+      "value": 175,
+      "unit": "cm",
+      "type": "numeric",
+      "description": "User's height, used in BMI calculations.",
+      "more_info": "https://www.cdc.gov/nchs/fastats/body-measurements.htm"
+    },
+    {
+      "id": 13,
+      "vital_key": "family_medical_history",
+      "value": ["Diabetes", "Heart Disease"],
+      "type": "list",
+      "description": "Hereditary health conditions present in the user's family.",
+      "more_info": "https://www.moh.gov.sa/health/family-history"
+    },
+    {
+      "id": 14,
+      "vital_key": "doctor_allergy_list",
+      "value": ["Aspirin"],
+      "type": "list",
+      "description": "Allergies recorded by the user's doctor.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/doctor"
+    },
+    {
+      "id": 15,
+      "vital_key": "user_allergy_list",
+      "value": ["Penicillin"],
+      "type": "list",
+      "description": "Self-reported allergies by the user.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/user"
+    },
+    {
+      "id": 16,
+      "vital_key": "health_id",
+      "value": "1234567890",
+      "type": "string",
+      "description": "Unique health identification number.",
+      "more_info": "https://www.moh.gov.sa/health/id"
+    },
+    {
+      "id": 17,
+      "vital_key": "previous_medications",
+      "value": ["Paracetamol"],
+      "type": "list",
+      "description": "Medications taken in the past.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+    },
+    {
+      "id": 18,
+      "vital_key": "current_medications",
+      "value": ["Metformin"],
+      "type": "list",
+      "description": "Medications currently taken.",
+      "more_info": "https://www.moh.gov.sa/health/medications/current"
+    },
+    {
+      "id": 19,
+      "vital_key": "general_vaccinations",
+      "value": ["Covid-19", "Flu"],
+      "type": "list",
+      "description": "General vaccinations received by the user.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/general"
+    },
+    {
+      "id": 20,
+      "vital_key": "children_vaccinations",
+      "value": ["Polio", "Measles"],
+      "type": "list",
+      "description": "Childhood vaccinations.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/children"
+    },
+    {
+      "id": 21,
+      "vital_key": "doctor_health_conditions",
+      "value": ["Hypertension"],
+      "type": "list",
+      "description": "Health conditions recorded by a doctor.",
+      "more_info": "https://www.moh.gov.sa/health/conditions/doctor"
+    },
+    {
+      "id": 22,
+      "vital_key": "previous_medications_list",
+      "value": ["Ibuprofen"],
+      "type": "list",
+      "description": "A detailed list of previously prescribed medications.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+    },
+    {
+      "id": 23,
+      "vital_key": "surgeries_procedures",
+      "value": ["Appendectomy"],
+      "type": "list",
+      "description": "History of surgeries and procedures.",
+      "more_info": "https://www.moh.gov.sa/health/procedures"
+    },
+    {
+      "id": 24,
+      "vital_key": "visits",
+      "value": "3 visits",
+      "type": "string",
+      "description": "Number of healthcare facility visits in the past year.",
+      "more_info": "https://www.moh.gov.sa/health/visits"
+    },
+    {
+      "id": 25,
+      "vital_key": "lab_test_results",
+      "value": "Normal",
+      "type": "string",
+      "description": "Recent lab test results.",
+      "more_info": "https://www.moh.gov.sa/health/lab-tests"
+    },
+    {
+      "id": 26,
+      "vital_key": "additional_info",
+      "value": "N/A",
+      "type": "string",
+      "description": "Additional vital information if available.",
+      "more_info": "https://www.moh.gov.sa/health/info"
+    },
+    {
+      "id": 27,
+      "vital_key": "location_health_facility",
+      "value": "King Saud Medical City",
+      "coordinates": { "lat": 24.7136, "lng": 46.6753 },
+      "type": "location",
+      "description": "The health facility where the user is registered.",
+      "more_info": "https://www.google.com/search?q=King+Saud+Medical+City"
+    },
+    {
+      "id": 28,
+      "vital_key": "previous_medications_list",
+      "value": ["Ibuprofen"],
+      "type": "list",
+      "description": "A detailed list of previously prescribed medications.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+    },
+    {
+      "id": 29,
+      "vital_key": "current_medications",
+      "value": ["Metformin"],
+      "type": "list",
+      "description": "Medications currently taken by the user.",
+      "more_info": "https://www.moh.gov.sa/health/medications/current"
+    },
+    {
+      "id": 30,
+      "vital_key": "general_vaccinations",
+      "value": ["Covid-19", "Flu"],
+      "type": "list",
+      "description": "General vaccinations received by the user.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/general"
+    },
+    {
+      "id": 31,
+      "vital_key": "children_vaccinations",
+      "value": ["Polio", "Measles"],
+      "type": "list",
+      "description": "Childhood vaccinations.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/children"
+    },
+    {
+      "id": 32,
+      "vital_key": "doctor_health_conditions",
+      "value": ["Hypertension"],
+      "type": "list",
+      "description": "Health conditions recorded by a healthcare professional.",
+      "more_info": "https://www.moh.gov.sa/health/conditions/doctor"
+    },
+    {
+      "id": 33,
+      "vital_key": "previous_medications_list",
+      "value": ["Ibuprofen"],
+      "type": "list",
+      "description": "A detailed list of previously prescribed medications.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+    },
+    {
+      "id": 34,
+      "vital_key": "surgeries_procedures",
+      "value": ["Appendectomy"],
+      "type": "list",
+      "description": "History of surgeries and procedures undergone by the user.",
+      "more_info": "https://www.moh.gov.sa/health/procedures"
+    }
+  ]
+}
