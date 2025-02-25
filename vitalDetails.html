@@ -27,7 +27,9 @@
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init();
-    
+    window.onerror = function(msg, url, line, col, error) {
+      console.log("Global error handler:", { msg, url, line, col, error });  
+    };
     window.addEventListener("load", function() {
       const vitalDataStr = sessionStorage.getItem("selectedVital");
       if (!vitalDataStr) {
