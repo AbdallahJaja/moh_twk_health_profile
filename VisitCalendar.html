@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>View Visits</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Simple calendar styles */
+    .calendar { max-width: 400px; margin: auto; }
+    .calendar th, .calendar td { text-align: center; padding: 5px; }
+    .event-list { margin-top: 20px; }
+  </style>
+  <script src="js/constants.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/apis.js"></script>
+  <script src="js/visitsCalendar.js"></script>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">MOH Services</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navContent">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="updateVitals.html">Vitals</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Visits</a></li>
+          <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container mt-5 pt-3">
+    <h3 class="mb-4 text-center">View Visits</h3>
+    <div class="calendar table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+            <th>Thu</th><th>Fri</th><th>Sat</th>
+          </tr>
+        </thead>
+        <tbody id="calendar-body">
+          <!-- Calendar days will be generated here -->
+        </tbody>
+      </table>
+    </div>
+    <div class="event-list mt-4">
+      <h5>Events on Selected Day</h5>
+      <ul id="events-list" class="list-group">
+        <!-- Events will be listed here -->
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

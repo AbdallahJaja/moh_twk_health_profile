@@ -167,7 +167,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -198,7 +198,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -235,7 +235,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -269,7 +269,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -297,7 +297,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -399,7 +399,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -565,7 +565,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -640,7 +640,7 @@ window.TWK = {
         generateHttpHashHeaders(address, "POST", messageBody).then(
           (headers) => {
             for (const [key, value] of Object.entries(headers)) {
-              if (ENABLELOG == true) {
+              if (true == true) {
                 console.log(key, value);
               }
               httpRequest.setRequestHeader(key, value);
@@ -716,7 +716,7 @@ window.TWK = {
         generateHttpHashHeaders(address, "POST", messageBody).then(
           (headers) => {
             for (const [key, value] of Object.entries(headers)) {
-              if (ENABLELOG == true) {
+              if (true == true) {
                 console.log(key, value);
               }
               httpRequest.setRequestHeader(key, value);
@@ -770,7 +770,7 @@ window.TWK = {
         generateHttpHashHeaders(address, "POST", messageBody).then(
           (headers) => {
             for (const [key, value] of Object.entries(headers)) {
-              if (ENABLELOG == true) {
+              if (true == true) {
                 console.log(key, value);
               }
               httpRequest.setRequestHeader(key, value);
@@ -973,7 +973,7 @@ window.TWK = {
       let messageBody = JSON.stringify(toSend);
       generateHttpHashHeaders(address, "POST", messageBody).then((headers) => {
         for (const [key, value] of Object.entries(headers)) {
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log(key, value);
           }
           httpRequest.setRequestHeader(key, value);
@@ -1185,12 +1185,12 @@ function encodeBase64(array) {
 
 async function getReturn(httpRequest, rawForce) {
   var textDecoder = new TextDecoder("utf-8");
-  if (ENABLELOG == true) {
+  if (true == true) {
     console.log("rawforce " + rawForce);
   }
   var ret = {};
   if (httpRequest.readyState === XMLHttpRequest.DONE) {
-    if (ENABLELOG == true) {
+    if (true == true) {
       console.log("httpRequest.status " + httpRequest.status);
     }
     try {
@@ -1202,17 +1202,17 @@ async function getReturn(httpRequest, rawForce) {
       if (rawForce) {
         isRaw = true;
       }
-      if (ENABLELOG == true) {
+      if (true == true) {
         console.log(" contentType " + contentType + " " + isRaw);
       }
       var textContent = "";
       if (!isRaw) {
-        if (ENABLELOG == true) {
+        if (true == true) {
           console.log("bytearray " + byteArray.length);
           console.log("bytearray " + byteArray.length);
         }
         textContent = textDecoder.decode(byteArray);
-        if (ENABLELOG == true) {
+        if (true == true) {
           console.log("textContent " + textContent);
         }
       }
@@ -1237,7 +1237,7 @@ async function getReturn(httpRequest, rawForce) {
         }
       }
     } catch (error) {
-      if (ENABLELOG == true) {
+      if (true == true) {
         console.log(error);
       }
       ret.success = false;
@@ -1252,7 +1252,7 @@ async function getReturn(httpRequest, rawForce) {
 function fileEndpointHelper() {
   return new Promise((resolveTop) => {
     httpHelper("/files").then((fileIdFetch) => {
-      if (ENABLELOG == true) {
+      if (true == true) {
         console.log(fileIdFetch);
       }
       if (fileIdFetch.success) {
@@ -1269,7 +1269,7 @@ function fileEndpointHelper() {
   });
 }
 function httpHelper(endpoint, rawForce) {
-  if (ENABLELOG == true) {
+  if (true == true) {
     console.log("rawforce " + rawForce);
   }
   return new Promise((resolve) => {
@@ -1294,7 +1294,7 @@ function httpHelper(endpoint, rawForce) {
 
     generateHttpHashHeaders(address, "GET", "").then((headers) => {
       for (const [key, value] of Object.entries(headers)) {
-        if (ENABLELOG == true) {
+        if (true == true) {
           console.log(key, value);
         }
         httpRequest.setRequestHeader(key, value);
@@ -1377,11 +1377,11 @@ function generateHttpHashHeaders(path, method, messageBody) {
       var signatureParams = "";
       for (const [key, value] of Object.entries(headers)) {
         signatureParams += `${key}: ${value},`;
-        if (ENABLELOG == true) {
+        if (true == true) {
           console.log(key + ":" + value);
         }
       }
-      if (ENABLELOG == true) {
+      if (true == true) {
         console.log(signatureParams);
       }
       generateSignatureFromParams(signatureParams, SHAREDSECRET).then(
@@ -1391,7 +1391,7 @@ function generateHttpHashHeaders(path, method, messageBody) {
           let signatureHeader = `Signature: algorithm="HMAC-SHA256",headers="${sigend_headers}",signature="${signature}"`;
           // Add signature to header
           headers["Signature"] = signatureHeader;
-          if (ENABLELOG == true) {
+          if (true == true) {
             console.log("Digest", digest);
             console.log("Signature Params", signatureParams);
             console.log("Generated Signature:", signature);
