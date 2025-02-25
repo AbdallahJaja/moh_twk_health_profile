@@ -28,20 +28,23 @@
   <script>
     AOS.init();
 
-  if(window.eruda) {
-    eruda.init();
-  }
-
-    window.onerror = function(msg, url, line, col, error) {
-      console.log("Global error handler:", { msg, url, line, col, error });  
-    };
     window.addEventListener("load", function() {
+      
+      if (window.eruda) {
+        eruda.init();
+      } 
+  
+      window.onerror = function(msg, url, line, col, error) {
+        console.log("Global error handler:", { msg, url, line, col, error });
+        alert("Global error handler:", { msg, url, line, col, error });
+      };
       const vitalDataStr = sessionStorage.getItem("selectedVital");
       if (!vitalDataStr) {
+        alert("!vitalDataSt")
         document.body.innerHTML = "<div class='container mt-5'><h3>No vital selected.</h3><button class='btn btn-primary' onclick='window.history.back()'>Back</button></div>";
         return;
       }
-      
+      alert("vitalDataSt")
       const vital = JSON.parse(vitalDataStr);
       const lang = AppSettings && AppSettings.language ? AppSettings.language : "en";
       const vitalName = VITALS_TRANSLATION[vital.vital_key]?.[lang] || vital.vital_key;
@@ -59,6 +62,7 @@
       const cancelSelectBtn = document.getElementById("cancelSelectBtn");
       
       function renderList() {
+        alert("renderList")
         vitalListEl.innerHTML = "";
         vitalItems.forEach((item, index) => {
           const row = document.createElement("div");
