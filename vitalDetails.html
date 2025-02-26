@@ -8,28 +8,95 @@
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
   <!-- Local AOS CSS -->
   <link href="lib/aos.css" rel="stylesheet">
-  <!-- Local Tabulator CSS -->
-  <link href="lib/tabulator.min.css" rel="stylesheet">
+
+  <!-- Local Tabulator CSS (if needed elsewhere) can be omitted here -->
   <style>
-    body { background: #f8f9fa; }
-    .content-container { margin-top: 80px; padding-bottom: 20px; }
-    /* For a modern, mobile-friendly card layout */
-    .vital-card { border: none; border-radius: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    .vital-header { background-color: #007bff; color: #fff; padding: 1rem; border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; }
-    .vital-body { padding: 1rem; }
-    /* Ensure the grid container has a minimum height */
-    #vitalGrid { min-height: 300px; }
+    body {
+      background: #f8f9fa;
+    }
+    .content-container {
+      margin-top: 80px;
+      padding-bottom: 20px;
+    }
+    /* Toolbar for navigation and multi-select */
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    /* List container for vital items */
+    .vital-list {
+      margin-bottom: 1.5rem;
+    }
+    /* Vital list item styling */
+    .vital-list-item {
+      position: relative;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 0.75rem;
+      background-color: #fff;
+      padding: 0.75rem 1rem;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+    .vital-list-item:hover {
+      transform: scale(1.01);
+    }
+    /* Swipe actions container – initially hidden */
+    .swipe-actions {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 140px;
+      background-color: #ff4d4d; /* Highlighted red for delete */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      transform: translateX(140px);
+      transition: transform 0.3s ease;
+    }
+    .vital-list-item.swiped {
+      transform: translateX(-140px);
+    }
+    .vital-list-itrudm.swiped .swipe-actions {
+      transform: translateX(0);
+    }
+    /* Multi-select checkbox */
+    .select-checkbox {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      display: none;
+    }
+    .select-mode .select-checkbox {
+      display: block;
+    }
+    /* Tutorial hint style */
+    .tutorial-hint {
+      background-color: #e9ecef;
+      color: #495057;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
   </style>
   
   <!-- Local Google Maps API (async, defer) -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
-  
+  <script src="js/firebaseInit.js"></script>
   <!-- Local Bootstrap Bundle with Popper -->
   <script src="lib/bootstrap.bundle.min.js"></script>
   <!-- Local AOS JS -->
   <script src="lib/aos.js"></script>
-  <!-- Local Tabulator JS -->
-  <script src="lib/tabulator.min.js"></script>
   
   <!-- External JS files -->
   <script src="twk_helper.js"></script>
@@ -41,11 +108,11 @@
     document.addEventListener('DOMContentLoaded', function() {
       
       AOS.init();
-      // Set language and direction based on constants from settings.js and localStorage
+      // Set language direction dynamically
       var currentLang = localStorage.getItem("lang") || "en";
       document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
-      // Update the page title using constants
-      document.getElementById("pageTitle").textContent = currentLang === "ar" ? LANG_AR.vitalDetailsTitle : LANG_EN.vitalDetailsTitle;
+      // Set page title using constants
+      document.getElementById("pageTitle").textContent = AppSettings.language === "ar" ? LANG_AR.vitalDetailsTitle : LANG_EN.vitalDetailsTitle;
     });
   </script>
 </head>
@@ -54,43 +121,41 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
       <a class="navbar-brand" href="index.html">MOH Services</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" 
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
               aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navContent">
-         <ul class="navbar-nav ms-auto">
-           <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-           <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
-           <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
-           <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
-           <li class="nav-item">
-             <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
-           </li>
-         </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
+          <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
+          <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+          <li class="nav-item">
+            <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
   
   <!-- Main Content -->
   <div class="container content-container" data-aos="fade-up">
-    <!-- Back Button -->
-    <button class="btn btn-outline-primary mb-3" onclick="window.history.back();">
-      <span id="backLabel"></span>
-    </button>
-    
-    <!-- Vital Detail Card -->
-    <div class="card vital-card">
-      <div class="vital-header">
-        <h3 id="vitalTitle"></h3>
-      </div>
-      <div class="vital-body">
-        <!-- For list-type vitals, Tabulator grid will be inserted here -->
-        <div id="vitalGrid"></div>
-        <!-- For non-list vitals, display value here -->
-        <div id="vitalValue" class="mt-3"></div>
-      </div>
+    <!-- Tutorial Hint -->
+    <div class="tutorial-hint" id="tutorialHint"></div>
+
+    <!-- Toolbar Row -->
+    <div class="toolbar-row">
+      <button id="backBtn" class="btn btn-outline-primary"></button>
+      <button id="toggleSelectModeBtn" class="btn btn-outline-secondary"></button>
+      <button id="deleteSelectedBtn" class="btn btn-danger" style="display: none;"></button>
     </div>
+    
+    <!-- Vital Title -->
+    <h3 id="vitalTitle" class="mb-4">Loading Vital...</h3>
+    
+    <!-- Vital Details List -->
+    <ul id="vitalDetailsList" class="list-group"></ul>
     
     <!-- Digital Twin Insights -->
     <div id="digital-twin" class="mt-4 p-3 border rounded bg-white shadow-sm">
@@ -113,107 +178,226 @@
     var currentLang = localStorage.getItem("lang") || "en";
     document.documentElement.lang = currentLang;
     var langSwitchBtn = document.getElementById("langSwitchBtn");
-    // All text is now taken from constants.js:
+    // Set all labels using constants from LANG_EN and LANG_AR
     if(currentLang === "en"){
       langSwitchBtn.textContent = LANG_AR.switchText;
-      document.getElementById("backLabel").textContent = LANG_EN.back;
+      document.getElementById("backBtn").textContent = LANG_EN.back;
+      document.getElementById("toggleSelectModeBtn").textContent = LANG_EN.select;
+      document.getElementById("deleteSelectedBtn").textContent = LANG_EN.deleteSelected;
       document.getElementById("twinLabel").textContent = LANG_EN.digitalTwinInsights;
       document.getElementById("copyToastText").textContent = LANG_EN.copied;
+      document.getElementById("tutorialHint").textContent = LANG_EN.swipeHint;
     } else {
       langSwitchBtn.textContent = LANG_EN.switchText;
-      document.getElementById("backLabel").textContent = LANG_AR.back;
+      document.getElementById("backBtn").textContent = LANG_AR.back;
+      document.getElementById("toggleSelectModeBtn").textContent = LANG_AR.select;
+      document.getElementById("deleteSelectedBtn").textContent = LANG_AR.deleteSelected;
       document.getElementById("twinLabel").textContent = LANG_AR.digitalTwinInsights;
       document.getElementById("copyToastText").textContent = LANG_AR.copied;
+      document.getElementById("tutorialHint").textContent = LANG_AR.swipeHint;
     }
     langSwitchBtn.addEventListener("click", function() {
       var newLang = currentLang === "en" ? "ar" : "en";
       localStorage.setItem("lang", newLang);
       location.reload();
     });
+    
+    document.getElementById("backBtn").addEventListener("click", function() {
+      window.history.back();
+    });
   </script>
   
-  <!-- Local Bootstrap Bundle with Popper -->
+  <!-- Local Bootstrap & AOS -->
   <script src="lib/bootstrap.bundle.min.js"></script>
   <script src="lib/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+  
+  <!-- Firebase Analytics & Crashlytics Setup -->
+  <script>
+    function logEvent(eventName, params) {
+      try {
+        if (firebase && firebase.analytics) {
+          firebase.analytics().logEvent(eventName, params);
+        }
+      } catch (e) {
+        if (firebase && firebase.crashlytics) {
+          firebase.crashlytics().recordError(e);
+        }
+        console.error("Error logging event:", e);
+      }
+    }
+  </script>
   
   <!-- Vital Details Rendering Script -->
   <script>
+    // Global multi-select flag
+    let multiSelectMode = false;
+
+    // Toggle multi-select mode
+    document.getElementById("toggleSelectModeBtn").addEventListener("click", function() {
+      multiSelectMode = !multiSelectMode;
+      const toggleBtn = this;
+      if(multiSelectMode) {
+        toggleBtn.textContent = currentLang === "ar" ? LANG_AR.cancelSelect : LANG_EN.cancelSelect;
+        document.getElementById("deleteSelectedBtn").style.display = "inline-block";
+        const items = document.querySelectorAll("#vitalDetailsList .vital-list-item");
+        items.forEach(item => {
+          let cb = item.querySelector(".select-checkbox");
+          if(!cb) {
+            cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.className = "form-check-input select-checkbox";
+            item.insertBefore(cb, item.firstChild);
+          }
+        });
+      } else {
+        toggleBtn.textContent = currentLang === "ar" ? LANG_AR.select : LANG_EN.select;
+        document.getElementById("deleteSelectedBtn").style.display = "none";
+        const checkboxes = document.querySelectorAll("#vitalDetailsList .select-checkbox");
+        checkboxes.forEach(cb => { cb.checked = false; cb.remove(); });
+      }
+    });
+
+    // Delete selected items
+    document.getElementById("deleteSelectedBtn").addEventListener("click", function() {
+      const items = document.querySelectorAll("#vitalDetailsList .vital-list-item");
+      items.forEach(item => {
+        const cb = item.querySelector(".select-checkbox");
+        if(cb && cb.checked) {
+          item.remove();
+          logEvent("delete_selected", { item: item.textContent });
+        }
+      });
+      const remaining = document.querySelectorAll("#vitalDetailsList .vital-list-item").length;
+      const template = (currentLang === "ar" ? LANG_AR.digitalTwinInsight : LANG_EN.digitalTwinInsight) || "You have {count} entries.";
+      document.getElementById("twin-insights").textContent = template.replace("{count}", remaining);
+    });
+
+    // Swipe event handlers
+    let startX = 0, currentX = 0, threshold = 60, swipingElem = null;
+    function handleTouchStart(e) {
+      swipingElem = e.currentTarget;
+      startX = e.touches[0].clientX;
+      swipingElem.style.transition = "none";
+    }
+    function handleTouchMove(e) {
+      if(!swipingElem) return;
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+      if(diff < 0) {
+        swipingElem.style.transform = "translateX(" + diff + "px)";
+      }
+    }
+    function handleTouchEnd(e) {
+      if(!swipingElem) return;
+      const diff = currentX - startX;
+      swipingElem.style.transition = "transform 0.3s ease";
+      if(diff < -threshold) {
+        swipingElem.classList.add("swiped");
+        logEvent("swipe_action", { type: "reveal_actions" });
+      } else {
+        swipingElem.classList.remove("swiped");
+        swipingElem.style.transform = "translateX(0)";
+      }
+      swipingElem = null;
+    }
+
+    // Render a vital list item with swipe actions
+    function renderListItem(itemText) {
+      const li = document.createElement("li");
+      li.className = "list-group-item vital-list-item";
+
+      // Multi-select checkbox will be added conditionally
+      const span = document.createElement("span");
+      span.textContent = itemText;
+      span.style.fontSize = "1.1rem";
+      span.style.color = "#333";
+      li.appendChild(span);
+
+      // Swipe actions container
+      const actionsDiv = document.createElement("div");
+      actionsDiv.className = "swipe-actions";
+      // Copy button
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "btn btn-secondary btn-sm";
+      copyBtn.textContent = currentLang === "ar" ? LANG_AR.copy : LANG_EN.copy;
+      copyBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        navigator.clipboard.writeText(itemText)
+          .then(function() {
+            new bootstrap.Toast(document.getElementById("copyToast")).show();
+            logEvent("copy_button_click", { value: itemText });
+          })
+          .catch(function(err) {
+            console.error("Copy failed:", err);
+          });
+      });
+      actionsDiv.appendChild(copyBtn);
+      // Delete button
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "btn btn-danger btn-sm";
+      deleteBtn.textContent = currentLang === "ar" ? LANG_AR.delete : LANG_EN.delete;
+      deleteBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        li.remove();
+        logEvent("delete_button_click", { value: itemText });
+        const remaining = document.querySelectorAll("#vitalDetailsList .vital-list-item").length;
+        const template = (currentLang === "ar" ? LANG_AR.digitalTwinInsight : LANG_EN.digitalTwinInsight) || "You have {count} entries.";
+        document.getElementById("twin-insights").textContent = template.replace("{count}", remaining);
+      });
+      actionsDiv.appendChild(deleteBtn);
+      
+      li.appendChild(actionsDiv);
+
+      // Attach touch events for swipe
+      li.addEventListener("touchstart", handleTouchStart);
+      li.addEventListener("touchmove", handleTouchMove);
+      li.addEventListener("touchend", handleTouchEnd);
+
+      return li;
+    }
+
+    // On window load, render the selected vital items
     window.addEventListener("load", function() {
       console.log("VitalDetails page loaded.");
-      var vitalDataStr = sessionStorage.getItem("selectedVital");
-      if (!vitalDataStr) {
+      const vitalDataStr = sessionStorage.getItem("selectedVital");
+      if(!vitalDataStr) {
         console.error("selectedVital not found in sessionStorage.");
         document.body.innerHTML = "<div class='container mt-5'><h3>" + (currentLang === "en" ? LANG_EN.noVitalSelected : LANG_AR.noVitalSelected) + "</h3><button class='btn btn-primary' onclick='window.history.back()'>" + (currentLang === "en" ? LANG_EN.back : LANG_AR.back) + "</button></div>";
         return;
       }
       console.log("Selected vital data:", vitalDataStr);
+      let vital;
       try {
-        var vital = JSON.parse(vitalDataStr);
+        vital = JSON.parse(vitalDataStr);
       } catch(e) {
         console.error("Error parsing selectedVital:", e);
         return;
       }
       console.log("Parsed vital:", vital);
       
-      // Set vital title using translation
-      var vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][AppSettings.language]) || vital.vital_key;
+      const vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][AppSettings.language]) || vital.vital_key;
       document.getElementById("vitalTitle").textContent = vitalName;
-      console.log("Vital title set to:", vitalName);
+      logEvent("vital_loaded", { vitalKey: vital.vital_key });
       
-      // If the vital is a list, use Tabulator to render a grid
-      if (vital.type === "list" && Array.isArray(vital.value)) {
-        var tableData = vital.value.map(function(item, index) {
-          return { id: index + 1, value: item };
-        });
-        var table = new Tabulator("#vitalGrid", {
-          data: tableData,
-          layout: "fitColumns",
-          responsiveLayout: "collapse",
-          columns: [
-            { title: currentLang === "ar" ? LANG_AR.noColumn : LANG_EN.noColumn, field: "id", sorter: "number", width: 60 },
-            { title: currentLang === "ar" ? LANG_AR.valueColumn : LANG_EN.valueColumn, field: "value", sorter: "string", headerFilter: "input" },
-            { title: currentLang === "ar" ? LANG_AR.copyColumn : LANG_EN.copyColumn,
-              formatter: function(cell) {
-                return "<button class='btn btn-secondary btn-sm'>" + (currentLang === "ar" ? LANG_AR.copy : LANG_EN.copy) + "</button>";
-              },
-              width: 100,
-              hozAlign: "center",
-              cellClick: function(e, cell) {
-                var rowData = cell.getRow().getData();
-                navigator.clipboard.writeText(rowData.value)
-                  .then(function() {
-                    new bootstrap.Toast(document.getElementById("copyToast")).show();
-                  })
-                  .catch(function(err) {
-                    console.error("Copy failed:", err);
-                  });
-              }
-            }
-          ],
-          pagination: "local",
-          paginationSize: 5,
-          movableColumns: true,
-          selectable: true,
-          initialSort: [{ column: "id", dir: "asc" }]
+      const listContainer = document.getElementById("vitalDetailsList");
+      listContainer.innerHTML = "";
+      
+      if(vital.type === "list" && Array.isArray(vital.value)) {
+        vital.value.forEach(function(item) {
+          const li = renderListItem(item);
+          listContainer.appendChild(li);
         });
       } else {
-        // For non-list vitals, hide the grid and show the value
-        document.getElementById("vitalGrid").style.display = "none";
-        document.getElementById("vitalValue").textContent = vital.value;
+        listContainer.innerHTML = "<li class='list-group-item'>" + vital.value + "</li>";
       }
       
-      // Digital Twin Insights
-      var count = Array.isArray(vital.value) ? vital.value.length : 1;
-      var insight = currentLang === "ar"
-                    ? LANG_AR.digitalTwinInsight.replace("{count}", count)
-                    : LANG_EN.digitalTwinInsight.replace("{count}", count);
-      var twinEl = document.getElementById("twin-insights");
-      if (twinEl) {
-        twinEl.textContent = insight;
-        console.log("Digital twin insight set to:", insight);
-      } else {
-        console.error("twin-insights element not found.");
-      }
+      const count = (vital.type === "list" && Array.isArray(vital.value)) ? vital.value.length : 1;
+      const template = (currentLang === "ar" ? LANG_AR.digitalTwinInsight : LANG_EN.digitalTwinInsight) || "You have {count} entries.";
+      document.getElementById("twin-insights").textContent = template.replace("{count}", count);
+      logEvent("digital_twin_calculated", { count: count });
     });
   </script>
   
