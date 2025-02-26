@@ -28,7 +28,7 @@ window.loadVitals = function() {
           return null;
         });
     } else {
-      // Real API flow (if needed)
+      // Real API flow if needed.
       return loginByTWK()
         .then(function(token) {
           return fetch(VITALS_API_URL, {
@@ -177,7 +177,7 @@ window.loadVitals = function() {
       col.appendChild(card);
       vitalsListEl.appendChild(col);
     });
-    // console.log("Rendered vitals HTML:", vitalsListEl.innerHTML);
+    console.log("Rendered vitals HTML:", vitalsListEl.innerHTML);
   }
   
   searchEl.addEventListener("input", function() {

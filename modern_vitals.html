@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MOH Vitals – Modern UX</title>
   
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- AOS CSS for animations -->
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Local Bootstrap CSS -->
+  <link href="lib/bootstrap.min.css" rel="stylesheet" />
+  <!-- Local AOS CSS -->
+  <link href="lib/aos.css" rel="stylesheet">
   <style>
     body { background: #f8f9fa; }
     .card:hover {
@@ -37,11 +37,11 @@
     #vitals-list { min-height: 200px; }
   </style>
   
-  <!-- Google Maps API (async, defer) -->
+  <!-- Local Google Maps API (async, defer) -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
   
-  <!-- Fuse.js for fuzzy search -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.min.js"></script>
+  <!-- Local Fuse.js -->
+  <script src="lib/fuse.min.js"></script>
   
   <!-- External JS files -->
   <script src="twk_helper.js"></script>
@@ -55,20 +55,20 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
       <a class="navbar-brand" href="index.html">MOH Services</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" 
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
               aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
-         <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navContent">
-         <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-            <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
-            <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
-            <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
-            <li class="nav-item">
-              <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
-            </li>
-         </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
+          <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
+          <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+          <li class="nav-item">
+            <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -117,8 +117,13 @@
     });
   </script>
   
-  <!-- Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Local Bootstrap Bundle with Popper -->
+  <script src="lib/bootstrap.bundle.min.js"></script>
+  <!-- Local AOS JS -->
+  <script src="lib/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
   
   <!-- Call loadVitals() -->
   <script>
@@ -127,16 +132,9 @@
       if (typeof window.loadVitals === "function") {
         window.loadVitals().then(function() {
           console.log("loadVitals() finished.");
-          // Refresh AOS if available
-          if (window.AOS && typeof AOS.refreshHard === "function") {
-            AOS.refreshHard();
-            console.log("AOS refreshed.");
-          } else {
-            console.warn("AOS not available.");
-          }
-          var renderedHTML = document.getElementById("vitals-list").innerHTML;
-          console.log("Rendered vitals HTML:", renderedHTML);
-          if (renderedHTML.trim() === "") {
+          AOS.refreshHard();
+          console.log("AOS refreshed.");
+          if(document.getElementById("vitals-list").innerHTML.trim() === ""){
             document.getElementById("vitals-list").innerHTML = "<div class='col'><p>No vitals found.</p></div>";
           }
         }).catch(function(err) {
