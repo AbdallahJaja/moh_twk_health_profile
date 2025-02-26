@@ -1,55 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MOH Services - Home</title>
+  <title id="pageTitle">MOH Services - Home</title>
   <!-- Local Bootstrap CSS -->
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
   <style>
-    body { padding-top: 70px; }
+    body { padding-top: 70px; background: #f8f9fa; }
+    .service-grid { margin-top: 30px; }
+    .service-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: transform 0.2s;
+      background-color: #fff;
+    }
+    .service-card:hover { transform: scale(1.05); }
+    .service-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    .service-label { font-size: 1rem; font-weight: 600; }
   </style>
+  
+  <!-- Local AOS CSS -->
+  <link href="lib/aos.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Top Navigation Bar -->
+  <!-- Fixed Top Navigation Bar -->
   <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
       <a class="navbar-brand" href="index.html">MOH Services</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
               aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navContent">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="modern_vitals.html">Vitals</a></li>
-          <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
-          <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
-          <li class="nav-item">
-            <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
-          </li>
-        </ul>
+         <ul class="navbar-nav ms-auto">
+           <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+           <li class="nav-item"><a class="nav-link" href="vitalsDashboard/index.html">Vitals</a></li>
+           <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
+           <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+           <li class="nav-item">
+             <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+           </li>
+         </ul>
       </div>
     </div>
   </nav>
-
-  <div class="container text-center">
-    <h2 class="mt-5">Welcome to MOH Services</h2>
-    <p>Select a service from the menu above.</p>
+  
+  <!-- Main Content: Services Grid -->
+  <div class="container service-grid" data-aos="fade-up">
+    <h2 class="text-center mb-4" id="welcomeMessage"></h2>
+    <div class="row">
+      <!-- Vitals Shortcut -->
+      <div class="col-6 col-md-3">
+        <a href="vitalsDashboard/index.html" class="text-decoration-none">
+          <div class="service-card">
+            <!-- Placeholder Icon: Replace with a proper icon if needed -->
+            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm1 12H7v-2h2v2zm0-4H7V4h2v4z"/>
+            </svg>
+            <div class="service-label" id="serviceVitalsLabel"></div>
+          </div>
+        </a>
+      </div>
+      <!-- Appointments Shortcut -->
+      <div class="col-6 col-md-3">
+        <a href="appointmentsWizard.html" class="text-decoration-none">
+          <div class="service-card">
+            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.5 0a.5.5 0 0 0 0 1H4v1a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V1h.5a.5.5 0 0 0 0-1h-9zM14 4H2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4z"/>
+            </svg>
+            <div class="service-label" id="serviceAppointmentsLabel"></div>
+          </div>
+        </a>
+      </div>
+      <!-- Book Appointment Shortcut -->
+      <div class="col-6 col-md-3">
+        <a href="bookAppointment.html" class="text-decoration-none">
+          <div class="service-card">
+            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h12v2H2v-2z"/>
+            </svg>
+            <div class="service-label" id="serviceBookAppointmentLabel"></div>
+          </div>
+        </a>
+      </div>
+      <!-- Visits Shortcut -->
+      <div class="col-6 col-md-3">
+        <a href="visitsCalendar.html" class="text-decoration-none">
+          <div class="service-card">
+            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.5 0a.5.5 0 0 0 0 1H4v1a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V1h.5a.5.5 0 0 0 0-1h-9zM14 4H2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4z"/>
+            </svg>
+            <div class="service-label" id="serviceVisitsLabel"></div>
+          </div>
+        </a>
+      </div>
+    </div>
   </div>
-
+  
+  <!-- Language Switch Script -->
   <script>
+    // Determine current language from localStorage (default "en")
     var currentLang = localStorage.getItem("lang") || "en";
     document.documentElement.lang = currentLang;
+    // Update document direction
+    document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+    
+    // Set page title and welcome message from constants
+    document.getElementById("pageTitle").textContent = currentLang === "ar" ? LANG_AR.homeTitle : LANG_EN.homeTitle;
+    document.getElementById("welcomeMessage").textContent = currentLang === "ar" ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
+    
+    // Set shortcut labels from constants
+    document.getElementById("serviceVitalsLabel").textContent = currentLang === "ar" ? LANG_AR.services.vitals : LANG_EN.services.vitals;
+    document.getElementById("serviceAppointmentsLabel").textContent = currentLang === "ar" ? LANG_AR.services.appointments : LANG_EN.services.appointments;
+    document.getElementById("serviceBookAppointmentLabel").textContent = currentLang === "ar" ? LANG_AR.services.bookAppointment : LANG_EN.services.bookAppointment;
+    document.getElementById("serviceVisitsLabel").textContent = currentLang === "ar" ? LANG_AR.services.visits : LANG_EN.services.visits;
+    
+    // Set language switch button text using constants
     var langSwitchBtn = document.getElementById("langSwitchBtn");
-    langSwitchBtn.textContent = currentLang === "en" ? "العربية" : "English";
+    langSwitchBtn.textContent = currentLang === "en" ? LANG_AR.switchText : LANG_EN.switchText;
     langSwitchBtn.addEventListener("click", function() {
       var newLang = currentLang === "en" ? "ar" : "en";
       localStorage.setItem("lang", newLang);
       location.reload();
     });
   </script>
+  
   <!-- Local Bootstrap Bundle with Popper -->
   <script src="lib/bootstrap.bundle.min.js"></script>
+  <!-- Local AOS JS -->
+  <script src="lib/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
 </body>
 </html>

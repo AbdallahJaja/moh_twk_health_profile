@@ -1,0 +1,33 @@
+/* vitalsDashboard/css/dashboard.css */
+
+/* Overall container spacing */
+.content-container {
+  padding-top: 80px;
+  padding-bottom: 20px;
+}
+
+/* Summary Section */
+.summary-section {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+/* Summary text styling */
+.summary-text {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Vital card custom styles */
+.vital-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vital-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}

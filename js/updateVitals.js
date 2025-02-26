@@ -1,4 +1,5 @@
 // js/updateVitals.js
+// This file defines a global loadVitals() function that fetches vitals data based on language
 window.loadVitals = function() {
   var vitalsListEl = document.getElementById("vitals-list");
   var loadingEl = document.getElementById("loading");
@@ -6,10 +7,15 @@ window.loadVitals = function() {
   var vitalsDataCache = [];
   var fuse = null;
   
+  // Determine current language; defaults to "en"
+  var currentLang = localStorage.getItem("lang") || "en";
+  // Choose appropriate mock file based on current language
+  var mockFile = currentLang === "ar" ? "mock/mock_vitals_ar.json" : "mock/mock_vitals_en.json";
+  
   function fetchVitals() {
-    if (USE_MOCK) {
-      console.log("Fetching mock data from 'mock/mock_vitals.json' ...");
-      return fetch("mock/mock_vitals.json")
+    if (USE_MOCK) { // USE_MOCK should be defined in constants.js
+      console.log("Fetching mock data from '" + mockFile + "' ...");
+      return fetch(mockFile)
         .then(function(response) {
           console.log("Fetch response status:", response.status);
           if (!response.ok) {
@@ -28,7 +34,7 @@ window.loadVitals = function() {
           return null;
         });
     } else {
-      // Real API flow if needed.
+      // Real API flow (if needed)
       return loginByTWK()
         .then(function(token) {
           return fetch(VITALS_API_URL, {
@@ -117,7 +123,7 @@ window.loadVitals = function() {
         }
       }
       
-      // Action Buttons (stop propagation)
+      // Action Buttons (prevent card click from interfering)
       var btnGroup = document.createElement("div");
       btnGroup.className = "btn-group";
       
@@ -179,17 +185,6 @@ window.loadVitals = function() {
     });
     console.log("Rendered vitals HTML:", vitalsListEl.innerHTML);
   }
-  
-  searchEl.addEventListener("input", function() {
-    var query = searchEl.value.trim();
-    if (!query) {
-      renderVitals(vitalsDataCache);
-      return;
-    }
-    var result = fuse.search(query);
-    var filteredVitals = result.map(function(r) { return r.item; });
-    renderVitals(filteredVitals);
-  });
   
   function calculateDigitalTwin(items) {
     var insight = "You have " + items.length + " entries. Regular review aids in preventive and predictive care.";

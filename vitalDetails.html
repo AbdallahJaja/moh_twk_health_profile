@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Vital Details</title>
+  <title id="pageTitle">Vital Details</title>
   <!-- Local Bootstrap CSS -->
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
   <!-- Local AOS CSS -->
   <link href="lib/aos.css" rel="stylesheet">
+  <!-- Local Tabulator CSS -->
+  <link href="lib/tabulator.min.css" rel="stylesheet">
   <style>
     body { background: #f8f9fa; }
-    /* Ensure some padding below navbar */
-    .content-container { margin-top: 80px; }
-    /* Toolbar styling */
-    .action-toolbar { margin-bottom: 20px; }
-    .select-mode .select-checkbox { display: inline-block; }
-    .non-select-mode .select-checkbox { display: none; }
+    .content-container { margin-top: 80px; padding-bottom: 20px; }
+    /* For a modern, mobile-friendly card layout */
+    .vital-card { border: none; border-radius: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .vital-header { background-color: #007bff; color: #fff; padding: 1rem; border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; }
+    .vital-body { padding: 1rem; }
+    /* Ensure the grid container has a minimum height */
+    #vitalGrid { min-height: 300px; }
   </style>
   
   <!-- Local Google Maps API (async, defer) -->
@@ -25,6 +28,8 @@
   <script src="lib/bootstrap.bundle.min.js"></script>
   <!-- Local AOS JS -->
   <script src="lib/aos.js"></script>
+  <!-- Local Tabulator JS -->
+  <script src="lib/tabulator.min.js"></script>
   
   <!-- External JS files -->
   <script src="twk_helper.js"></script>
@@ -33,7 +38,15 @@
   <script src="js/apis.js"></script>
   
   <script>
-    AOS.init();
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      AOS.init();
+      // Set language and direction based on constants from settings.js and localStorage
+      var currentLang = localStorage.getItem("lang") || "en";
+      document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+      // Update the page title using constants
+      document.getElementById("pageTitle").textContent = currentLang === "ar" ? LANG_AR.vitalDetailsTitle : LANG_EN.vitalDetailsTitle;
+    });
   </script>
 </head>
 <body>
@@ -43,17 +56,17 @@
       <a class="navbar-brand" href="index.html">MOH Services</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" 
               aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
-         <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navContent">
          <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-            <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
-            <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
-            <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
-            <li class="nav-item">
-              <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
-            </li>
+           <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+           <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
+           <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
+           <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+           <li class="nav-item">
+             <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+           </li>
          </ul>
       </div>
     </div>
@@ -62,66 +75,56 @@
   <!-- Main Content -->
   <div class="container content-container" data-aos="fade-up">
     <!-- Back Button -->
-    <button class="btn btn-outline-primary mb-3" onclick="window.history.back();">Back</button>
+    <button class="btn btn-outline-primary mb-3" onclick="window.history.back();">
+      <span id="backLabel"></span>
+    </button>
     
-    <!-- Vital Title -->
-    <h3 id="vitalTitle" class="mb-4">Loading Vital...</h3>
-    
-    <!-- Action Toolbar for multi-select operations -->
-    <div id="actionToolbar" class="action-toolbar d-flex align-items-center non-select-mode mb-3">
-      <button id="toggleSelectBtn" class="btn btn-outline-secondary me-2">Select</button>
-      <button id="copyAllBtn" class="btn btn-secondary me-2">Copy All</button>
-      <button id="deleteSelectedBtn" class="btn btn-danger me-2" style="display:none;">Delete Selected</button>
-      <button id="editSelectedBtn" class="btn btn-primary me-2" style="display:none;">Edit Selected</button>
-      <button id="cancelSelectBtn" class="btn btn-outline-secondary" style="display:none;">Cancel</button>
-    </div>
-    
-    <!-- Vital Items List (for list-type vitals) -->
-    <div id="vitalDetailsList" class="list-group mb-4">
-      <!-- Each row will be generated here -->
+    <!-- Vital Detail Card -->
+    <div class="card vital-card">
+      <div class="vital-header">
+        <h3 id="vitalTitle"></h3>
+      </div>
+      <div class="vital-body">
+        <!-- For list-type vitals, Tabulator grid will be inserted here -->
+        <div id="vitalGrid"></div>
+        <!-- For non-list vitals, display value here -->
+        <div id="vitalValue" class="mt-3"></div>
+      </div>
     </div>
     
     <!-- Digital Twin Insights -->
     <div id="digital-twin" class="mt-4 p-3 border rounded bg-white shadow-sm">
-      <h5>Digital Twin Insights</h5>
-      <div id="twin-insights">Calculating insights...</div>
-    </div>
-  </div>
-  
-  <!-- Edit Modal for multi-select editing -->
-  <div class="modal fade" id="multiEditModal" tabindex="-1" aria-labelledby="multiEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content" data-aos="zoom-in">
-        <div class="modal-header">
-          <h5 class="modal-title" id="multiEditModalLabel">Edit Selected Items</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Enter new value to apply to all selected items:</p>
-          <input type="text" id="multiEditInput" class="form-control" />
-          <div id="multiEditError" class="text-danger mt-2"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="applyMultiEditBtn">Apply</button>
-        </div>
-      </div>
+      <h5 id="twinLabel"></h5>
+      <div id="twin-insights"></div>
     </div>
   </div>
   
   <!-- Toast Notification for Copy -->
   <div class="toast-container">
     <div id="copyToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body">Copied to clipboard!</div>
+      <div class="toast-body">
+        <span id="copyToastText"></span>
+      </div>
     </div>
   </div>
   
-  <!-- Language switch script -->
+  <!-- Language Switch Script -->
   <script>
     var currentLang = localStorage.getItem("lang") || "en";
     document.documentElement.lang = currentLang;
     var langSwitchBtn = document.getElementById("langSwitchBtn");
-    langSwitchBtn.textContent = currentLang === "en" ? "العربية" : "English";
+    // All text is now taken from constants.js:
+    if(currentLang === "en"){
+      langSwitchBtn.textContent = LANG_AR.switchText;
+      document.getElementById("backLabel").textContent = LANG_EN.back;
+      document.getElementById("twinLabel").textContent = LANG_EN.digitalTwinInsights;
+      document.getElementById("copyToastText").textContent = LANG_EN.copied;
+    } else {
+      langSwitchBtn.textContent = LANG_EN.switchText;
+      document.getElementById("backLabel").textContent = LANG_AR.back;
+      document.getElementById("twinLabel").textContent = LANG_AR.digitalTwinInsights;
+      document.getElementById("copyToastText").textContent = LANG_AR.copied;
+    }
     langSwitchBtn.addEventListener("click", function() {
       var newLang = currentLang === "en" ? "ar" : "en";
       localStorage.setItem("lang", newLang);
@@ -131,130 +134,89 @@
   
   <!-- Local Bootstrap Bundle with Popper -->
   <script src="lib/bootstrap.bundle.min.js"></script>
-  
-  <!-- Local AOS JS -->
   <script src="lib/aos.js"></script>
   
-  <!-- Vital Details Script -->
+  <!-- Vital Details Rendering Script -->
   <script>
-    // Retrieve the selected vital from sessionStorage
-    var vitalDataStr = sessionStorage.getItem("selectedVital");
-    if (!vitalDataStr) {
-      document.body.innerHTML = "<div class='container mt-5'><h3>No vital selected.</h3><button class='btn btn-primary' onclick='window.history.back()'>Back</button></div>";
-    } else {
-      var vital = JSON.parse(vitalDataStr);
-      console.log("Selected vital:", vital);
-      // Set vital title using translation if available
+    window.addEventListener("load", function() {
+      console.log("VitalDetails page loaded.");
+      var vitalDataStr = sessionStorage.getItem("selectedVital");
+      if (!vitalDataStr) {
+        console.error("selectedVital not found in sessionStorage.");
+        document.body.innerHTML = "<div class='container mt-5'><h3>" + (currentLang === "en" ? LANG_EN.noVitalSelected : LANG_AR.noVitalSelected) + "</h3><button class='btn btn-primary' onclick='window.history.back()'>" + (currentLang === "en" ? LANG_EN.back : LANG_AR.back) + "</button></div>";
+        return;
+      }
+      console.log("Selected vital data:", vitalDataStr);
+      try {
+        var vital = JSON.parse(vitalDataStr);
+      } catch(e) {
+        console.error("Error parsing selectedVital:", e);
+        return;
+      }
+      console.log("Parsed vital:", vital);
+      
+      // Set vital title using translation
       var vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][AppSettings.language]) || vital.vital_key;
       document.getElementById("vitalTitle").textContent = vitalName;
+      console.log("Vital title set to:", vitalName);
       
-      // Render the vital details
-      var detailsList = document.getElementById("vitalDetailsList");
-      detailsList.innerHTML = "";
-      // For list type vitals, each item becomes a row with a copy button.
-      if (vital.type === "list") {
-        if (Array.isArray(vital.value)) {
-          vital.value.forEach(function(item, index) {
-            var listItem = document.createElement("div");
-            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-            listItem.textContent = item;
-            // Add a copy button for this row
-            var btn = document.createElement("button");
-            btn.className = "btn btn-secondary btn-sm";
-            btn.textContent = LANG_EN.copy;
-            btn.onclick = function() {
-              navigator.clipboard.writeText(item)
-                .then(function() {
-                  new bootstrap.Toast(document.getElementById("copyToast")).show();
-                })
-                .catch(function(err) {
-                  console.error("Copy failed:", err);
-                });
-            };
-            listItem.appendChild(btn);
-            detailsList.appendChild(listItem);
-          });
-        } else {
-          // If vital.value is not an array, show it directly.
-          var listItem = document.createElement("div");
-          listItem.className = "list-group-item";
-          listItem.textContent = vital.value;
-          detailsList.appendChild(listItem);
-        }
-      } else {
-        // For non-list vitals, just display the value.
-        var listItem = document.createElement("div");
-        listItem.className = "list-group-item";
-        listItem.textContent = vital.value;
-        detailsList.appendChild(listItem);
-      }
-    }
-    
-    // Multi-select functionality for list vitals
-    // (Implementation for select, copy all, delete selected, edit selected, cancel)
-    // For brevity, we attach events to buttons if they exist.
-    document.getElementById("toggleSelectBtn")?.addEventListener("click", function() {
-      // Toggle to select mode: show checkboxes next to each list item.
-      var items = document.querySelectorAll("#vitalDetailsList .list-group-item");
-      items.forEach(function(item) {
-        // Add a checkbox if not already added.
-        if (!item.querySelector(".select-checkbox")) {
-          var checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.className = "form-check-input me-2 select-checkbox";
-          item.insertBefore(checkbox, item.firstChild);
-        }
-      });
-      // Show toolbar buttons for multi-select actions.
-      document.getElementById("actionToolbar").classList.remove("non-select-mode");
-      document.getElementById("actionToolbar").classList.add("select-mode");
-    });
-    
-    document.getElementById("cancelSelectBtn")?.addEventListener("click", function() {
-      // Remove checkboxes and switch back to non-select mode.
-      var items = document.querySelectorAll("#vitalDetailsList .select-checkbox");
-      items.forEach(function(checkbox) {
-        checkbox.remove();
-      });
-      document.getElementById("actionToolbar").classList.remove("select-mode");
-      document.getElementById("actionToolbar").classList.add("non-select-mode");
-    });
-    
-    document.getElementById("copyAllBtn")?.addEventListener("click", function() {
-      var items = document.querySelectorAll("#vitalDetailsList .list-group-item");
-      var allText = "";
-      items.forEach(function(item) {
-        allText += item.textContent.replace(LANG_EN.copy, "").trim() + ", ";
-      });
-      navigator.clipboard.writeText(allText.slice(0, -2))
-        .then(function() {
-          new bootstrap.Toast(document.getElementById("copyToast")).show();
-        })
-        .catch(function(err) {
-          console.error("Copy all failed:", err);
+      // If the vital is a list, use Tabulator to render a grid
+      if (vital.type === "list" && Array.isArray(vital.value)) {
+        var tableData = vital.value.map(function(item, index) {
+          return { id: index + 1, value: item };
         });
-    });
-    
-    // (Implement deleteSelectedBtn and editSelectedBtn events as needed)
-    // For now, we just log a message.
-    document.getElementById("deleteSelectedBtn")?.addEventListener("click", function() {
-      console.log("Delete selected clicked.");
-      // (Implement deletion logic)
-    });
-    document.getElementById("editSelectedBtn")?.addEventListener("click", function() {
-      console.log("Edit selected clicked.");
-      // (Implement editing logic)
+        var table = new Tabulator("#vitalGrid", {
+          data: tableData,
+          layout: "fitColumns",
+          responsiveLayout: "collapse",
+          columns: [
+            { title: currentLang === "ar" ? LANG_AR.noColumn : LANG_EN.noColumn, field: "id", sorter: "number", width: 60 },
+            { title: currentLang === "ar" ? LANG_AR.valueColumn : LANG_EN.valueColumn, field: "value", sorter: "string", headerFilter: "input" },
+            { title: currentLang === "ar" ? LANG_AR.copyColumn : LANG_EN.copyColumn,
+              formatter: function(cell) {
+                return "<button class='btn btn-secondary btn-sm'>" + (currentLang === "ar" ? LANG_AR.copy : LANG_EN.copy) + "</button>";
+              },
+              width: 100,
+              hozAlign: "center",
+              cellClick: function(e, cell) {
+                var rowData = cell.getRow().getData();
+                navigator.clipboard.writeText(rowData.value)
+                  .then(function() {
+                    new bootstrap.Toast(document.getElementById("copyToast")).show();
+                  })
+                  .catch(function(err) {
+                    console.error("Copy failed:", err);
+                  });
+              }
+            }
+          ],
+          pagination: "local",
+          paginationSize: 5,
+          movableColumns: true,
+          selectable: true,
+          initialSort: [{ column: "id", dir: "asc" }]
+        });
+      } else {
+        // For non-list vitals, hide the grid and show the value
+        document.getElementById("vitalGrid").style.display = "none";
+        document.getElementById("vitalValue").textContent = vital.value;
+      }
+      
+      // Digital Twin Insights
+      var count = Array.isArray(vital.value) ? vital.value.length : 1;
+      var insight = currentLang === "ar"
+                    ? LANG_AR.digitalTwinInsight.replace("{count}", count)
+                    : LANG_EN.digitalTwinInsight.replace("{count}", count);
+      var twinEl = document.getElementById("twin-insights");
+      if (twinEl) {
+        twinEl.textContent = insight;
+        console.log("Digital twin insight set to:", insight);
+      } else {
+        console.error("twin-insights element not found.");
+      }
     });
   </script>
   
-  <!-- Optionally disable Eruda if present -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      if(window.eruda) {
-        eruda.destroy();
-        console.log("Eruda disabled.");
-      }
-    });
-  </script>
+
 </body>
 </html>

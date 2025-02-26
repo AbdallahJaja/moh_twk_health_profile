@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title id="pageTitle">MOH Vitals Dashboard</title>
+  <!-- Local Bootstrap CSS -->
+  <link href="../lib/bootstrap.min.css" rel="stylesheet" />
+  <!-- Local AOS CSS -->
+  <link href="../lib/aos.css" rel="stylesheet">
+  <!-- Custom Dashboard CSS -->
+  <link href="css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Fixed Top Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html">MOH Services</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" 
+              aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navContent">
+         <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" href="index.html">Vitals</a></li>
+            <li class="nav-item"><a class="nav-link" href="../visitsCalendar.html">Visits</a></li>
+            <li class="nav-item"><a class="nav-link" href="../appointmentsWizard.html">Appointments</a></li>
+            <li class="nav-item">
+              <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+            </li>
+         </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container content-container" data-aos="fade-up">
+    <!-- Top Summary Section -->
+    <div class="summary-section mb-4">
+      <div class="row align-items-center">
+        <div class="col-3 text-center">
+          <img id="user-image" src="" alt="User Image" class="rounded-circle img-fluid" />
+        </div>
+        <div class="col-9">
+          <h3 id="greeting">Hi, User</h3>
+          <p id="user-age"></p>
+          <p id="vitalsSummary" class="summary-text"></p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Vitals List Section -->
+    <div class="vitals-list">
+      <h4 id="vitalsListTitle" class="mb-3"></h4>
+      <div id="vitalsCards" class="row row-cols-1 row-cols-md-2 g-3">
+        <!-- Vital cards will be dynamically inserted here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Local JS Libraries -->
+  <script src="../lib/bootstrap.bundle.min.js"></script>
+  <script src="../lib/aos.js"></script>
+  <script src="../lib/fuse.min.js"></script>
+  
+  <!-- External JS Files -->
+  <script src="../twk_helper.js"></script>
+  <script src="../js/constants.js"></script>
+  <script src="../js/settings.js"></script>
+  <script src="../js/apis.js"></script>
+  <!-- Dashboard JS -->
+  <script src="js/dashboard.js"></script>
+  
+  <script>
+    // Language & Direction Setup
+    var currentLang = localStorage.getItem("lang") || "en";
+    document.documentElement.lang = currentLang;
+    document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+    // Set page title and welcome message from constants
+    document.getElementById("pageTitle").textContent = currentLang === "ar" ? LANG_AR.vitalsDashboardTitle : LANG_EN.vitalsDashboardTitle;
+  </script>
+  
+  <script>
+    AOS.init();
+  </script>
+</body>
+</html>

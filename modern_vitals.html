@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MOH Vitals – Modern UX</title>
-  
   <!-- Local Bootstrap CSS -->
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
   <!-- Local AOS CSS -->
@@ -42,6 +41,8 @@
   
   <!-- Local Fuse.js -->
   <script src="lib/fuse.min.js"></script>
+  <!-- Local AOS JS -->
+  <script src="lib/aos.js"></script>
   
   <!-- External JS files -->
   <script src="twk_helper.js"></script>
@@ -49,6 +50,15 @@
   <script src="js/settings.js"></script>
   <script src="js/apis.js"></script>
   <script src="js/updateVitals.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      AOS.init();
+      // Set document direction dynamically from AppSettings.language (from constants.js/settings.js)
+      var currentLang = localStorage.getItem("lang") || "en";
+      document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+    });
+  </script>
 </head>
 <body>
   <!-- Top Navigation Bar -->
@@ -57,18 +67,18 @@
       <a class="navbar-brand" href="index.html">MOH Services</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
               aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navContent">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
-          <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
-          <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
-          <li class="nav-item">
-            <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
-          </li>
-        </ul>
+         <ul class="navbar-nav ms-auto">
+           <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+           <li class="nav-item"><a class="nav-link active" href="#">Vitals</a></li>
+           <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
+           <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+           <li class="nav-item">
+             <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
+           </li>
+         </ul>
       </div>
     </div>
   </nav>
@@ -92,7 +102,7 @@
     <div id="vitals-list" class="row row-cols-1 row-cols-md-2 g-4"></div>
     <!-- Digital Twin Section -->
     <div id="digital-twin" class="mt-4 p-3 border rounded bg-white shadow-sm">
-      <h5>Digital Twin Insights</h5>
+      <h5 id="twinLabel">Digital Twin Insights</h5>
       <div id="twin-insights">Calculating insights...</div>
     </div>
   </div>
@@ -100,16 +110,21 @@
   <!-- Toast Notification for Copy -->
   <div class="toast-container">
     <div id="copyToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body">Copied to clipboard!</div>
+      <div class="toast-body">
+        <span id="copyToastText">Copied to clipboard!</span>
+      </div>
     </div>
   </div>
   
-  <!-- Language switch script -->
   <script>
     var currentLang = localStorage.getItem("lang") || "en";
     document.documentElement.lang = currentLang;
     var langSwitchBtn = document.getElementById("langSwitchBtn");
-    langSwitchBtn.textContent = currentLang === "en" ? "العربية" : "English";
+    if(currentLang === "en"){
+      langSwitchBtn.textContent = "العربية";
+    } else {
+      langSwitchBtn.textContent = "English";
+    }
     langSwitchBtn.addEventListener("click", function() {
       var newLang = currentLang === "en" ? "ar" : "en";
       localStorage.setItem("lang", newLang);
@@ -117,15 +132,8 @@
     });
   </script>
   
-  <!-- Local Bootstrap Bundle with Popper -->
   <script src="lib/bootstrap.bundle.min.js"></script>
-  <!-- Local AOS JS -->
   <script src="lib/aos.js"></script>
-  <script>
-    AOS.init();
-  </script>
-  
-  <!-- Call loadVitals() -->
   <script>
     window.addEventListener("load", function() {
       console.log("Modern_Vitals page loaded.");
@@ -134,9 +142,6 @@
           console.log("loadVitals() finished.");
           AOS.refreshHard();
           console.log("AOS refreshed.");
-          if(document.getElementById("vitals-list").innerHTML.trim() === ""){
-            document.getElementById("vitals-list").innerHTML = "<div class='col'><p>No vitals found.</p></div>";
-          }
         }).catch(function(err) {
           console.error("loadVitals() error:", err);
         });
