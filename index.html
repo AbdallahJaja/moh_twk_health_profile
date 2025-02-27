@@ -4,12 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title id="pageTitle">MOH Services - Home</title>
+  
   <!-- Local Bootstrap CSS -->
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
-  <script src="js/firebaseInit.js"></script>  
+  <!-- Local AOS CSS -->
+  <link href="lib/aos.css" rel="stylesheet" />
+  
   <style>
-    body { padding-top: 70px; background: #f8f9fa; }
-    .service-grid { margin-top: 30px; }
+    body {
+      padding-top: 70px;
+      /* The background theme will be applied by adding a class from AppSettings.theme */
+    }
+    .service-grid {
+      margin-top: 30px;
+    }
     .service-card {
       border: none;
       border-radius: 0.75rem;
@@ -20,40 +28,42 @@
       transition: transform 0.2s;
       background-color: #fff;
     }
-    .service-card:hover { transform: scale(1.05); }
+    .service-card:hover {
+      transform: scale(1.05);
+    }
     .service-icon {
       width: 60px;
       height: 60px;
       margin-bottom: 10px;
     }
-    .service-label { font-size: 1rem; font-weight: 600; }
+    .service-label {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    /* Language switch button styling (flag icon) */
+    #langSwitchBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
   </style>
   
-  <!-- Local AOS CSS -->
-  <link href="lib/aos.css" rel="stylesheet">
+  <!-- Load constants and settings before any DOM manipulation -->
+  <script src="js/constants.js"></script>
+  <script src="js/settings.js"></script>
+  <!-- Optional: Firebase initialization and TWK helper -->
+  <script src="twk_helper.js"></script>
+  <script src="js/firebaseInit.js"></script>
+  <!-- Local AOS JS -->
+  <script src="lib/aos.js"></script>
 </head>
 <body>
-  <!-- Fixed Top Navigation Bar -->
-  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">MOH Services</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
-              aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
-         <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navContent">
-         <ul class="navbar-nav ms-auto">
-           <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-           <li class="nav-item"><a class="nav-link" href="modern_vitals.html">Vitals</a></li>
-           <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
-           <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
-           <li class="nav-item">
-             <button id="langSwitchBtn" class="btn btn-outline-light btn-sm ms-2"></button>
-           </li>
-         </ul>
-      </div>
-    </div>
-  </nav>
+  <!-- Placeholder for the shared navigation bar -->
+  <div id="navbarContainer"></div>
   
   <!-- Main Content: Services Grid -->
   <div class="container service-grid" data-aos="fade-up">
@@ -63,33 +73,11 @@
       <div class="col-6 col-md-3">
         <a href="modern_vitals.html" class="text-decoration-none">
           <div class="service-card">
-            <!-- Placeholder Icon: Replace with a proper icon if needed -->
+            <!-- Inline SVG icon -->
             <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm1 12H7v-2h2v2zm0-4H7V4h2v4z"/>
             </svg>
             <div class="service-label" id="serviceVitalsLabel"></div>
-          </div>
-        </a>
-      </div>
-      <!-- Appointments Shortcut -->
-      <div class="col-6 col-md-3">
-        <a href="appointmentsWizard.html" class="text-decoration-none">
-          <div class="service-card">
-            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3.5 0a.5.5 0 0 0 0 1H4v1a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V1h.5a.5.5 0 0 0 0-1h-9zM14 4H2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4z"/>
-            </svg>
-            <div class="service-label" id="serviceAppointmentsLabel"></div>
-          </div>
-        </a>
-      </div>
-      <!-- Book Appointment Shortcut -->
-      <div class="col-6 col-md-3">
-        <a href="bookAppointment.html" class="text-decoration-none">
-          <div class="service-card">
-            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h12v2H2v-2z"/>
-            </svg>
-            <div class="service-label" id="serviceBookAppointmentLabel"></div>
           </div>
         </a>
       </div>
@@ -104,43 +92,81 @@
           </div>
         </a>
       </div>
+      <!-- Appointments Shortcut -->
+      <div class="col-6 col-md-3">
+        <a href="appointmentsWizard.html" class="text-decoration-none">
+          <div class="service-card">
+            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.5 0a.5.5 0 0 0 0 1H4v1a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V1h.5a.5.5 0 0 0 0-1h-9zM14 4H2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4z"/>
+            </svg>
+            <div class="service-label" id="serviceAppointmentsLabel"></div>
+          </div>
+        </a>
+      </div>
+      <!-- Settings Shortcut -->
+      <div class="col-6 col-md-3">
+        <a href="settings.html" class="text-decoration-none">
+          <div class="service-card">
+            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h12v2H2v-2z"/>
+            </svg>
+            <div class="service-label" id="serviceSettingsLabel"></div>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
   
-  <!-- Language Switch Script -->
-  <script>
-    // Determine current language from localStorage (default "en")
-    var currentLang = localStorage.getItem("lang") || "en";
-    document.documentElement.lang = currentLang;
-    // Update document direction
-    document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
-    
-    // Set page title and welcome message from constants
-    document.getElementById("pageTitle").textContent = currentLang === "ar" ? LANG_AR.homeTitle : LANG_EN.homeTitle;
-    document.getElementById("welcomeMessage").textContent = currentLang === "ar" ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
-    
-    // Set shortcut labels from constants
-    document.getElementById("serviceVitalsLabel").textContent = currentLang === "ar" ? LANG_AR.services.vitals : LANG_EN.services.vitals;
-    document.getElementById("serviceAppointmentsLabel").textContent = currentLang === "ar" ? LANG_AR.services.appointments : LANG_EN.services.appointments;
-    document.getElementById("serviceBookAppointmentLabel").textContent = currentLang === "ar" ? LANG_AR.services.bookAppointment : LANG_EN.services.bookAppointment;
-    document.getElementById("serviceVisitsLabel").textContent = currentLang === "ar" ? LANG_AR.services.visits : LANG_EN.services.visits;
-    
-    // Set language switch button text using constants
-    var langSwitchBtn = document.getElementById("langSwitchBtn");
-    langSwitchBtn.textContent = currentLang === "en" ? LANG_AR.switchText : LANG_EN.switchText;
-    langSwitchBtn.addEventListener("click", function() {
-      var newLang = currentLang === "en" ? "ar" : "en";
-      localStorage.setItem("lang", newLang);
-      location.reload();
-    });
-  </script>
-  
   <!-- Local Bootstrap Bundle with Popper -->
   <script src="lib/bootstrap.bundle.min.js"></script>
-  <!-- Local AOS JS -->
-  <script src="lib/aos.js"></script>
+  
+  <!-- Initialize AOS and then set up page content once DOM and navbar are ready -->
   <script>
     AOS.init();
+
+    // Use DOMContentLoaded to ensure that the page is fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      var currentLang = localStorage.getItem("lang") || "en";
+      document.documentElement.lang = currentLang;
+      document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+      
+      // Set page title and welcome message using constants
+      document.getElementById("pageTitle").textContent = (currentLang === "ar") ? LANG_AR.homeTitle : LANG_EN.homeTitle;
+      document.getElementById("welcomeMessage").textContent = (currentLang === "ar") ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
+      
+      // Set service shortcut labels
+      document.getElementById("serviceVitalsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.vitals : LANG_EN.services.vitals;
+      document.getElementById("serviceVisitsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.visits : LANG_EN.services.visits;
+      document.getElementById("serviceAppointmentsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.appointments : LANG_EN.services.appointments;
+      document.getElementById("serviceSettingsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.settings : LANG_EN.services.settings;
+      
+      // Load the shared navbar and then update the language switch button
+      fetch("navbar.html")
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+          document.getElementById("navbarContainer").innerHTML = html;
+          // After navbar is loaded, update the language switch button
+          var langSwitchBtn = document.getElementById("langSwitchBtn");
+          if (langSwitchBtn) {
+            langSwitchBtn.textContent = (currentLang === "en") ? LANG_AR.switchText : LANG_EN.switchText;
+            langSwitchBtn.addEventListener("click", function() {
+              var newLang = (currentLang === "en") ? "ar" : "en";
+              localStorage.setItem("lang", newLang);
+              location.reload();
+            });
+          } else {
+            console.error("Language switch button not found in navbar.");
+          }
+        })
+        .catch(function(error) {
+          console.error("Error loading navbar:", error);
+        });
+      
+      // Apply background theming from AppSettings.theme
+      if (AppSettings && AppSettings.theme) {
+        document.body.classList.add(AppSettings.theme);
+      }
+    });
   </script>
 </body>
 </html>

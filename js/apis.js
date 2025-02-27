@@ -102,4 +102,22 @@ async function saveVital(id, newValue) {
     console.error("Error saving vital", error);
     return false;
   }
+  
+  // js/apis.js
+
+// Dummy delete API call – in production, replace with your real API endpoint and headers.
+function deleteVitalItem(vitalKey, itemValue) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log("Deleted vital item:", vitalKey, itemValue);
+      // Log the event to Firebase Analytics (if initialized)
+      try {
+        firebase.analytics().logEvent("vital_item_deleted", { vitalKey, itemValue });
+      } catch (e) {
+        console.error("Error logging delete event:", e);
+      }
+      resolve({ success: true });
+    }, 500);
+  });
+}
 }

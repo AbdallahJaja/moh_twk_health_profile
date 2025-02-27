@@ -18,7 +18,7 @@ window.AppSettings = window.AppSettings || {
     // TWK.getUserBirthDate()
     //   .then((response) => {
     //     if (response.success && response.result) {
-          const birthDate = new Date("17/08/1986");
+          const birthDate = new Date("08/17/1986");
           const today = new Date();
           let age = today.getFullYear() - birthDate.getFullYear();
           const m = today.getMonth() - birthDate.getMonth();

@@ -1,9 +1,10 @@
-// js/constants.js
+/* js/constants.js */
+const API_BASE_URL = "https://www.api.moh.gov.sa/v1";
+const VITALS_API_URL = API_BASE_URL + "/user/vitals";
+const SAVE_VITALS_API_URL = API_BASE_URL + "/user/save_vitals"; // Append /{id} when calling
+const AUTH_API_URL = "https://www.api.moh.gov.sa/v1/auth/login";
+const VISITS_API_URL = API_BASE_URL + "/user/visits";
 
-// Flag to use mock data (true for now)
-const USE_MOCK = true;
-
-// English localization strings
 const LANG_EN = {
   homeTitle: "MOH Services - Home",
   vitalDetailsTitle: "Vital Details",
@@ -20,7 +21,7 @@ const LANG_EN = {
   copy: "Copy",
   delete: "Delete",
   noVitalSelected: "No vital selected.",
-  switchText: "العربية",
+  switchText: "🇺🇸", // Flag icon for English
   swipeHint: "Swipe left to copy or delete",
   services: {
     vitals: "Vitals",
@@ -32,7 +33,6 @@ const LANG_EN = {
   vitalListTitle: "Your Vitals"
 };
 
-// Arabic localization strings
 const LANG_AR = {
   homeTitle: "خدمات وزارة الصحة",
   vitalDetailsTitle: "تفاصيل الحالة الصحية",
@@ -49,7 +49,7 @@ const LANG_AR = {
   copy: "نسخ",
   delete: "حذف",
   noVitalSelected: "لم يتم تحديد حالة صحية.",
-  switchText: "English",
+  switchText: "🇸🇦", // Flag icon for Arabic
   swipeHint: "اسحب لليسار للنسخ أو الحذف",
   services: {
     vitals: "الحالات الصحية",
@@ -61,7 +61,6 @@ const LANG_AR = {
   vitalListTitle: "قائمة الحالات الصحية"
 };
 
-// Mapping for vital keys to localized titles
 const VITALS_TRANSLATION = {
   drug_allergy_list: { en: "Drug Allergy List", ar: "قائمة الحساسية من الأدوية" },
   food_allergy_list: { en: "Food Allergy List", ar: "قائمة الحساسية من الأطعمة" },
@@ -78,3 +77,5 @@ const VITALS_TRANSLATION = {
   family_medical_history: { en: "Family Medical History", ar: "التاريخ المرضي للأسرة" }
   // Add additional mappings as needed...
 };
+const STORAGE_KEY = "MOH_TOKEN";
+const USE_MOCK = true;

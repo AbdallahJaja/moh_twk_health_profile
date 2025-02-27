@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MOH Vitals – Modern UX</title>
+  <title id="pageTitle">MOH Vitals – Modern UX</title>
   <!-- Local Bootstrap CSS -->
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
   <!-- Local AOS CSS -->
   <link href="lib/aos.css" rel="stylesheet">
-  <script src="js/firebaseInit.js"></script>
-
+  
   <style>
     body { background: #f8f9fa; }
     .card:hover {
@@ -36,6 +35,24 @@
       100% { background-position: -200% 0; }
     }
     #vitals-list { min-height: 200px; }
+    /* Clear button styling for search input */
+    #clearSearchBtn {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: none;
+    }
+    /* Avatar styling */
+    #avatar {
+      width: 60px;
+      height: 60px;
+      margin-right: 10px;
+    }
   </style>
   
   <!-- Local Google Maps API (async, defer) -->
@@ -54,16 +71,16 @@
   <script src="js/updateVitals.js"></script>
   
   <script>
+    // Ensure AOS and language settings are initialized once DOM is ready.
     document.addEventListener('DOMContentLoaded', function() {
       AOS.init();
-      // Set document direction dynamically from AppSettings.language (from constants.js/settings.js)
       var currentLang = localStorage.getItem("lang") || "en";
       document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
     });
   </script>
 </head>
 <body>
-  <!-- Top Navigation Bar -->
+  <!-- Top Navigation Bar (hard-coded for this page) -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
       <a class="navbar-brand" href="index.html">MOH Services</a>
@@ -88,15 +105,20 @@
   <div class="container mt-5 pt-5" data-aos="fade-up">
     <!-- User Header -->
     <div class="d-flex align-items-center mb-4">
-      <img id="user-image" class="rounded-circle me-3" width="60" height="60" alt="User Image">
+      <!-- Inline SVG avatar -->
+      <svg id="avatar" class="rounded-circle me-3" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="32" fill="#007bff" />
+        <text x="32" y="40" text-anchor="middle" font-size="28" fill="#fff" font-family="Arial, sans-serif">A</text>
+      </svg>
       <div>
         <h4 id="greeting">Hi, Abdullah Jaja</h4>
         <p id="user-age" class="mb-0"></p>
       </div>
     </div>
-    <!-- Search Box -->
-    <div class="mb-4">
+    <!-- Search Box with Clear Button -->
+    <div class="position-relative mb-4">
       <input type="text" id="search" class="form-control form-control-lg" placeholder="Search vitals..." />
+      <button id="clearSearchBtn">&times;</button>
     </div>
     <!-- Loading Shimmer -->
     <div id="loading" class="shimmer-wrapper"></div>
@@ -118,32 +140,84 @@
     </div>
   </div>
   
-  <script>
-    var currentLang = localStorage.getItem("lang") || "en";
-    document.documentElement.lang = currentLang;
-    var langSwitchBtn = document.getElementById("langSwitchBtn");
-    if(currentLang === "en"){
-      langSwitchBtn.textContent = "العربية";
-    } else {
-      langSwitchBtn.textContent = "English";
-    }
-    langSwitchBtn.addEventListener("click", function() {
-      var newLang = currentLang === "en" ? "ar" : "en";
-      localStorage.setItem("lang", newLang);
-      location.reload();
-    });
-  </script>
-  
   <script src="lib/bootstrap.bundle.min.js"></script>
   <script src="lib/aos.js"></script>
   <script>
-    window.addEventListener("load", function() {
-      console.log("Modern_Vitals page loaded.");
+    AOS.init();
+    
+    // Wrap initialization in DOMContentLoaded to ensure elements exist
+    document.addEventListener("DOMContentLoaded", function() {
+      var currentLang = localStorage.getItem("lang") || "en";
+      document.documentElement.lang = currentLang;
+      document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+
+      // Safely set page title and greeting elements if they exist
+      var pageTitleEl = document.getElementById("pageTitle");
+      if (pageTitleEl) {
+        pageTitleEl.textContent = (currentLang === "ar") ? LANG_AR.vitalsDashboardTitle : LANG_EN.vitalsDashboardTitle;
+      }
+      var welcomeMessageEl = document.getElementById("welcomeMessage");
+      if (welcomeMessageEl) {
+        welcomeMessageEl.textContent = (currentLang === "ar") ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
+      }
+      
+      // Configure language switch button if it exists
+      var langSwitchBtn = document.getElementById("langSwitchBtn");
+      if (langSwitchBtn) {
+        langSwitchBtn.textContent = (currentLang === "en") ? LANG_AR.switchText : LANG_EN.switchText;
+        langSwitchBtn.addEventListener("click", function() {
+          var newLang = (currentLang === "en") ? "ar" : "en";
+          localStorage.setItem("lang", newLang);
+          location.reload();
+        });
+      }
+      
+      // Set user greeting and age
+      var greetingEl = document.getElementById("greeting");
+      if (greetingEl) {
+        var now = new Date();
+        var hour = now.getHours();
+        var timeGreeting = (hour < 12) ? ((currentLang === "ar") ? "صباح الخير" : "Good morning")
+                          : (hour < 18) ? ((currentLang === "ar") ? "مساء الخير" : "Good afternoon")
+                          : ((currentLang === "ar") ? "مساء الخير" : "Good evening");
+        greetingEl.textContent = ((currentLang === "ar") ? LANG_AR.greeting : LANG_EN.greeting) + ", " + timeGreeting + ", Abdullah Jaja";
+      }
+      
+      var ageEl = document.getElementById("user-age");
+      if (ageEl) {
+        if (isNaN(AppSettings.age) || AppSettings.age === null) {
+          ageEl.textContent = (currentLang === "ar") ? LANG_AR.age + ": N/A" : LANG_EN.age + ": N/A";
+        } else {
+          ageEl.textContent = (currentLang === "ar") ? LANG_AR.age + ": " + AppSettings.age : LANG_EN.age + ": " + AppSettings.age;
+        }
+      }
+      
+      // Search clear button behavior
+      var searchEl = document.getElementById("search");
+      var clearSearchBtn = document.getElementById("clearSearchBtn");
+      if (searchEl && clearSearchBtn) {
+        searchEl.addEventListener("input", function() {
+          clearSearchBtn.style.display = (this.value.trim().length > 0) ? "block" : "none";
+        });
+        clearSearchBtn.addEventListener("click", function() {
+          searchEl.value = "";
+          clearSearchBtn.style.display = "none";
+          if (typeof window.loadVitals === "function") {
+            window.loadVitals();
+          }
+        });
+      }
+      
+      // Apply background theming from AppSettings.theme
+      if (AppSettings && AppSettings.theme) {
+        document.body.classList.add(AppSettings.theme);
+      }
+      
+      // Call loadVitals() from updateVitals.js if available
       if (typeof window.loadVitals === "function") {
         window.loadVitals().then(function() {
           console.log("loadVitals() finished.");
           AOS.refreshHard();
-          console.log("AOS refreshed.");
         }).catch(function(err) {
           console.error("loadVitals() error:", err);
         });
