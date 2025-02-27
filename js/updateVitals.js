@@ -1,8 +1,7 @@
 // js/updateVitals.js
+// Global functions for handling vitals UI interactions
 
-// Define missing functions in the global scope
-
-// Copies vital details to clipboard and logs the event
+// Copy vital details to clipboard
 window.copyToClipboard = function(vitalName, vitalValue, vitalUnit) {
   var text = vitalName + ": " + (Array.isArray(vitalValue) ? vitalValue.join(", ") : vitalValue + (vitalUnit ? " " + vitalUnit : ""));
   navigator.clipboard.writeText(text)
@@ -17,7 +16,7 @@ window.copyToClipboard = function(vitalName, vitalValue, vitalUnit) {
     });
 };
 
-// Shows additional information about the vital in an alert (replace with modal later)
+// Show additional info about the vital
 window.showInfo = function(vital) {
   var infoText = vital.description || ((localStorage.getItem("lang") === "ar") ? "لا توجد معلومات إضافية" : "No additional info");
   alert(infoText);
@@ -26,27 +25,61 @@ window.showInfo = function(vital) {
   }
 };
 
-// Opens an edit modal for the vital (stub implementation; replace with modal form)
+// Open edit modal with vital details; only for non-list vitals (ids 1-13)
 window.openEditModal = function(vital) {
-  alert((localStorage.getItem("lang") === "ar") ? "فتح نافذة التحرير لـ " + vital.vital_key : "Open edit modal for " + vital.vital_key);
-  if (typeof logEvent === "function") {
-    logEvent("edit_button_click", { vitalKey: vital.vital_key });
+  console.log("openEditModal called for vital:", vital);
+  var currentLang = localStorage.getItem("lang") || "en";
+  var vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][AppSettings.language]) || vital.vital_key;
+  var modalTitle = (currentLang === "ar") ? "تحرير " + vitalName : "Edit " + vitalName;
+  var editModalLabel = document.getElementById("editModalLabel");
+  if (editModalLabel) { editModalLabel.textContent = modalTitle; }
+  var editVitalTitle = document.getElementById("editVitalTitle");
+  if (editVitalTitle) { editVitalTitle.textContent = vitalName; }
+  var editInput = document.getElementById("editVitalValue");
+  if (editInput) {
+    if (vital.type !== "list") { editInput.value = vital.value; } else { editInput.value = ""; }
   }
+  var cancelBtn = document.getElementById("cancelEditBtn");
+  if (cancelBtn) { cancelBtn.textContent = (currentLang === "ar") ? "إلغاء" : "Cancel"; }
+  var saveBtn = document.getElementById("saveEditBtn");
+  if (saveBtn) {
+    saveBtn.textContent = (currentLang === "ar") ? "حفظ" : "Save";
+    saveBtn.onclick = function(e) {
+      e.stopPropagation();
+      var newValue = editInput.value;
+      saveVital(vital.id, newValue).then(function(success) {
+        if (success) {
+          alert((currentLang === "ar") ? "تم التحديث بنجاح" : "Update successful");
+          if (typeof window.loadVitals === "function") { window.loadVitals(); }
+        } else {
+          alert((currentLang === "ar") ? "فشل التحديث" : "Update failed");
+        }
+        var modalEl = document.getElementById("editModal");
+        var modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) { modalInstance.hide(); }
+      }).catch(function(err) {
+        console.error("Error saving vital:", err);
+      });
+    };
+  }
+  if (typeof logEvent === "function") { logEvent("edit_button_click", { vitalKey: vital.vital_key }); }
+  var modalEl = document.getElementById("editModal");
+  var modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+  modalInstance.show();
 };
 
-// Toggles unit conversion for numeric vitals; converts kg <-> lbs, cm <-> inches
+// Toggle conversion for numeric vitals (kg <-> lbs, cm <-> in)
 window.toggleConversion = function(vital, btn, valueEl) {
-  // For kg and cm, perform a simple conversion
-  if(vital.unit === "kg") {
-    if(!vital.converted) {
+  if (vital.unit === "kg") {
+    if (!vital.converted) {
       vital.convertedValue = (vital.value * 2.20462).toFixed(1);
       vital.convertedUnit = "lbs";
       vital.converted = true;
     } else {
       vital.converted = false;
     }
-  } else if(vital.unit === "cm") {
-    if(!vital.converted) {
+  } else if (vital.unit === "cm") {
+    if (!vital.converted) {
       vital.convertedValue = (vital.value * 0.393701).toFixed(1);
       vital.convertedUnit = "in";
       vital.converted = true;
@@ -54,17 +87,14 @@ window.toggleConversion = function(vital, btn, valueEl) {
       vital.converted = false;
     }
   }
-  if(vital.converted) {
+  if (vital.converted) {
     valueEl.textContent = vital.convertedValue + " " + vital.convertedUnit;
   } else {
     valueEl.textContent = vital.value + " " + (vital.unit || "");
   }
-  if (typeof logEvent === "function") {
-    logEvent("convert_units", { vitalKey: vital.vital_key });
-  }
+  if (typeof logEvent === "function") { logEvent("convert_units", { vitalKey: vital.vital_key }); }
 };
 
-// Main loadVitals function that fetches and renders vitals data
 window.loadVitals = function() {
   var vitalsListEl = document.getElementById("vitals-list");
   var loadingEl = document.getElementById("loading");
@@ -81,13 +111,10 @@ window.loadVitals = function() {
       return fetch(mockFile)
         .then(function(response) {
           console.log("Fetch response status:", response.status);
-          if (!response.ok) {
-            throw new Error("HTTP error! status: " + response.status);
-          }
+          if (!response.ok) { throw new Error("HTTP error! status: " + response.status); }
           return response.text();
         })
         .then(function(text) {
-          console.log("Raw response text:", text);
           var data = JSON.parse(text);
           console.log("Mock vitals data loaded:", data);
           return data;
@@ -103,9 +130,7 @@ window.loadVitals = function() {
             headers: { Authorization: "Bearer " + token }
           });
         })
-        .then(function(response) {
-          return response.json();
-        })
+        .then(function(response) { return response.json(); })
         .catch(function(error) {
           console.error("Error fetching vitals from API:", error.message);
           return null;
@@ -114,11 +139,7 @@ window.loadVitals = function() {
   }
   
   function loadVitalsInternal() {
-    try {
-      if (loadingEl) loadingEl.style.display = "block";
-    } catch(e) {
-      console.warn("Loading element not found:", e);
-    }
+    if (loadingEl) loadingEl.style.display = "block";
     return fetchVitals().then(function(data) {
       if (!data) {
         console.error("No data received from fetchVitals.");
@@ -133,7 +154,8 @@ window.loadVitals = function() {
           threshold: 0.3
         });
         
-        var userImageEl = document.getElementById("user-image");
+        // Set user header info
+        var userImageEl = document.getElementById("user-avatar");
         if (userImageEl && data.user.image) {
           userImageEl.src = data.user.image;
         }
@@ -143,18 +165,14 @@ window.loadVitals = function() {
         }
         var ageEl = document.getElementById("user-age");
         if (ageEl) {
-          if (isNaN(AppSettings.age) || AppSettings.age === null) {
-            ageEl.textContent = ((currentLang === "ar") ? LANG_AR.age : LANG_EN.age) + ": N/A";
-          } else {
-            ageEl.textContent = ((currentLang === "ar") ? LANG_AR.age : LANG_EN.age) + ": " + AppSettings.age;
-          }
+          ageEl.textContent = (isNaN(AppSettings.age) || AppSettings.age === null)
+            ? ((currentLang === "ar") ? LANG_AR.age + ": N/A" : LANG_EN.age + ": N/A")
+            : ((currentLang === "ar") ? LANG_AR.age + ": " + AppSettings.age : LANG_EN.age + ": " + AppSettings.age);
         }
         var welcomeMessageEl = document.getElementById("welcomeMessage");
         if (welcomeMessageEl) {
           welcomeMessageEl.textContent = (currentLang === "ar") ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
-        } else {
-          console.warn("welcomeMessage element not found.");
-        }
+        } else { console.warn("welcomeMessage element not found."); }
         renderVitals(vitalsDataCache);
         calculateDigitalTwin(vitalsDataCache);
       } catch (renderError) {
@@ -181,10 +199,12 @@ window.loadVitals = function() {
       card.className = "card h-100";
       card.setAttribute("data-aos", "fade-up");
       
+      // Attach the vital data to the card element for drag sorting
+      card._vitalData = vital;
+      
       if (vital.type === "list") {
         card.style.cursor = "pointer";
         card.addEventListener("click", function() {
-          console.log("Card clicked for vital:", vital);
           sessionStorage.setItem("selectedVital", JSON.stringify(vital));
           window.location.href = "vitalDetails.html";
         });
@@ -214,14 +234,26 @@ window.loadVitals = function() {
       var btnGroup = document.createElement("div");
       btnGroup.className = "btn-group";
       
-      var infoBtn = document.createElement("button");
-      infoBtn.className = "btn btn-info btn-sm";
-      infoBtn.textContent = (currentLang === "ar") ? LANG_AR.moreActions : LANG_EN.moreActions;
-      infoBtn.onclick = function(e) {
+      // Favorite button: toggle favorite status on vital record
+      var favBtn = document.createElement("button");
+      favBtn.className = "fav-btn";
+      favBtn.innerHTML = (vital.favorite) ? "&#9733;" : "&#9734;"; // filled star vs outline star
+      favBtn.onclick = function(e) {
         e.stopPropagation();
-        showInfo(vital);
+        vital.favorite = !vital.favorite;
+        favBtn.innerHTML = (vital.favorite) ? "&#9733;" : "&#9734;";
+        // Re-render so favorites appear at the top.
+        vitalsDataCache.sort(function(a, b) {
+          return (a.favorite === b.favorite) ? 0 : (a.favorite ? -1 : 1);
+        });
+        renderVitals(vitalsDataCache);
+        if (typeof logEvent === "function") {
+          logEvent("favorite_toggle", { vitalKey: vital.vital_key, favorite: vital.favorite });
+        }
       };
+      btnGroup.append(favBtn);
       
+      // Copy button
       var copyBtn = document.createElement("button");
       copyBtn.className = "btn btn-secondary btn-sm";
       copyBtn.textContent = (currentLang === "ar") ? LANG_AR.copy : LANG_EN.copy;
@@ -229,9 +261,9 @@ window.loadVitals = function() {
         e.stopPropagation();
         copyToClipboard(vitalName, vital.value, vital.unit);
       };
+      btnGroup.append(copyBtn);
       
-      btnGroup.append(infoBtn, copyBtn);
-      
+      // Show Edit button only for non-list vitals (ids 1–13)
       if (vital.id >= 1 && vital.id <= 13) {
         var editBtn = document.createElement("button");
         editBtn.className = "btn btn-primary btn-sm";
@@ -243,6 +275,7 @@ window.loadVitals = function() {
         btnGroup.append(editBtn);
       }
       
+      // Convert Units button for numeric values in kg or cm
       if (vital.type === "numeric" && vital.unit && (vital.unit === "kg" || vital.unit === "cm")) {
         var convertBtn = document.createElement("button");
         convertBtn.className = "btn btn-warning btn-sm";
@@ -254,6 +287,7 @@ window.loadVitals = function() {
         btnGroup.append(convertBtn);
       }
       
+      // More Info button if available
       if (vital.more_info) {
         var moreInfoBtn = document.createElement("button");
         moreInfoBtn.className = "btn btn-link btn-sm";
@@ -288,7 +322,7 @@ window.loadVitals = function() {
     }
   }
   
-  // Attach search filtering behavior
+  // Attach search filtering behavior using Fuse.js
   if (searchEl && clearSearchBtn) {
     searchEl.addEventListener("input", function() {
       var query = this.value.trim();

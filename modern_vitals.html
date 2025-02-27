@@ -7,13 +7,14 @@
   <!-- Local Bootstrap CSS -->
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
   <!-- Local AOS CSS -->
-  <link href="lib/aos.css" rel="stylesheet">
-  
+  <link href="lib/aos.css" rel="stylesheet" />
   <style>
-    body { background: #f8f9fa; }
+    body {
+      background: #f8f9fa;
+    }
     .card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
       transition: transform 0.3s;
     }
     .toast-container {
@@ -34,8 +35,10 @@
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
     }
-    #vitals-list { min-height: 200px; }
-    /* Clear button styling for search input */
+    #vitals-list {
+      min-height: 200px;
+    }
+    /* Search clear button styling */
     #clearSearchBtn {
       position: absolute;
       right: 15px;
@@ -47,21 +50,54 @@
       cursor: pointer;
       display: none;
     }
-    /* Avatar styling */
-    #avatar {
-      width: 60px;
-      height: 60px;
+    /* Sort menu container */
+    #sortMenu {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+    #sortMenu select {
       margin-right: 10px;
+    }
+    /* Drag & drop: add a subtle border during drag */
+    .dragging {
+      opacity: 0.6;
+      border: 2px dashed #007bff;
+    }
+    /* Favorite star icon styling */
+    .fav-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #ccc;
+    }
+    .fav-btn.active {
+      color: gold;
+    }
+    /* Native-like sort animation classes */
+    .ios-sort .card {
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    .android-sort .card {
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    /* Modal override */
+    .modal-header {
+      background: #007bff;
+      color: #fff;
     }
   </style>
   
   <!-- Local Google Maps API (async, defer) -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
-  
   <!-- Local Fuse.js -->
   <script src="lib/fuse.min.js"></script>
   <!-- Local AOS JS -->
   <script src="lib/aos.js"></script>
+  <!-- Local SortableJS -->
+  <script src="lib/Sortable.js"></script>
   
   <!-- External JS files -->
   <script src="twk_helper.js"></script>
@@ -71,7 +107,6 @@
   <script src="js/updateVitals.js"></script>
   
   <script>
-    // Ensure AOS and language settings are initialized once DOM is ready.
     document.addEventListener('DOMContentLoaded', function() {
       AOS.init();
       var currentLang = localStorage.getItem("lang") || "en";
@@ -80,7 +115,7 @@
   </script>
 </head>
 <body>
-  <!-- Top Navigation Bar (hard-coded for this page) -->
+  <!-- Top Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
       <a class="navbar-brand" href="index.html">MOH Services</a>
@@ -105,29 +140,65 @@
   <div class="container mt-5 pt-5" data-aos="fade-up">
     <!-- User Header -->
     <div class="d-flex align-items-center mb-4">
-      <!-- Inline SVG avatar -->
-      <svg id="avatar" class="rounded-circle me-3" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="32" cy="32" r="32" fill="#007bff" />
-        <text x="32" y="40" text-anchor="middle" font-size="28" fill="#fff" font-family="Arial, sans-serif">A</text>
-      </svg>
+      <!-- Avatar: use AppSettings.userImage if provided; otherwise, fallback to inline first-letter avatar -->
+      <img id="user-avatar" class="rounded-circle me-3" width="60" height="60" alt="User Avatar">
       <div>
         <h4 id="greeting">Hi, Abdullah Jaja</h4>
         <p id="user-age" class="mb-0"></p>
       </div>
     </div>
+    
+    <!-- Sort Menu -->
+    <div id="sortMenu">
+      <select id="sortSelect" class="form-select form-select-sm" style="width: auto;">
+        <option value="nameAsc">Sort by Name (A → Z)</option>
+        <option value="nameDesc">Sort by Name (Z → A)</option>
+        <option value="manual">Manual Sort</option>
+      </select>
+      <button id="sortToggleBtn" class="btn btn-outline-secondary btn-sm" style="display: none;">Drag to sort</button>
+    </div>
+    
     <!-- Search Box with Clear Button -->
     <div class="position-relative mb-4">
       <input type="text" id="search" class="form-control form-control-lg" placeholder="Search vitals..." />
       <button id="clearSearchBtn">&times;</button>
     </div>
+    
     <!-- Loading Shimmer -->
     <div id="loading" class="shimmer-wrapper"></div>
+    
     <!-- Vitals Cards Grid -->
     <div id="vitals-list" class="row row-cols-1 row-cols-md-2 g-4"></div>
+    
     <!-- Digital Twin Section -->
     <div id="digital-twin" class="mt-4 p-3 border rounded bg-white shadow-sm">
       <h5 id="twinLabel">Digital Twin Insights</h5>
       <div id="twin-insights">Calculating insights...</div>
+    </div>
+  </div>
+  
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Vital name (read-only) -->
+          <p id="editVitalTitle" class="fw-bold"></p>
+          <!-- Vital value input -->
+          <div class="mb-3">
+            <label for="editVitalValue" class="form-label">Value</label>
+            <input type="text" class="form-control" id="editVitalValue">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="cancelEditBtn" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+          <button type="button" id="saveEditBtn" class="btn btn-primary"></button>
+        </div>
+      </div>
     </div>
   </div>
   
@@ -142,26 +213,47 @@
   
   <script src="lib/bootstrap.bundle.min.js"></script>
   <script src="lib/aos.js"></script>
+  <script src="lib/Sortable.min.js"></script>
   <script>
     AOS.init();
     
-    // Wrap initialization in DOMContentLoaded to ensure elements exist
     document.addEventListener("DOMContentLoaded", function() {
       var currentLang = localStorage.getItem("lang") || "en";
       document.documentElement.lang = currentLang;
       document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
-
-      // Safely set page title and greeting elements if they exist
+      
+      // Set page title and greeting
       var pageTitleEl = document.getElementById("pageTitle");
       if (pageTitleEl) {
         pageTitleEl.textContent = (currentLang === "ar") ? LANG_AR.vitalsDashboardTitle : LANG_EN.vitalsDashboardTitle;
       }
-      var welcomeMessageEl = document.getElementById("welcomeMessage");
-      if (welcomeMessageEl) {
-        welcomeMessageEl.textContent = (currentLang === "ar") ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
+      var greetingEl = document.getElementById("greeting");
+      if (greetingEl) {
+        var now = new Date();
+        var hour = now.getHours();
+        var timeGreeting = (hour < 12) ? ((currentLang === "ar") ? "صباح الخير" : "Good morning")
+                         : (hour < 18) ? ((currentLang === "ar") ? "مساء الخير" : "Good afternoon")
+                         : ((currentLang === "ar") ? "مساء الخير" : "Good evening");
+        greetingEl.textContent = ((currentLang === "ar") ? LANG_AR.greeting : LANG_EN.greeting) + ", " + timeGreeting + ", Abdullah Jaja";
+      }
+      var ageEl = document.getElementById("user-age");
+      if (ageEl) {
+        ageEl.textContent = (isNaN(AppSettings.age) || AppSettings.age === null)
+          ? ((currentLang === "ar") ? LANG_AR.age + ": N/A" : LANG_EN.age + ": N/A")
+          : ((currentLang === "ar") ? LANG_AR.age + ": " + AppSettings.age : LANG_EN.age + ": " + AppSettings.age);
       }
       
-      // Configure language switch button if it exists
+      // Avatar: Use AppSettings.userImage if exists; otherwise, fallback to first letter avatar.
+      var avatarEl = document.getElementById("user-avatar");
+      if (avatarEl) {
+        if (AppSettings.userImage && AppSettings.userImage.trim() !== "") {
+          avatarEl.src = AppSettings.userImage;
+        } else {
+          avatarEl.outerHTML = '<svg id="user-avatar" class="rounded-circle me-3" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="32" fill="#007bff"/><text x="32" y="40" text-anchor="middle" font-size="28" fill="#fff" font-family="Arial, sans-serif">A</text></svg>';
+        }
+      }
+      
+      // Configure language switch button
       var langSwitchBtn = document.getElementById("langSwitchBtn");
       if (langSwitchBtn) {
         langSwitchBtn.textContent = (currentLang === "en") ? LANG_AR.switchText : LANG_EN.switchText;
@@ -172,39 +264,82 @@
         });
       }
       
-      // Set user greeting and age
-      var greetingEl = document.getElementById("greeting");
-      if (greetingEl) {
-        var now = new Date();
-        var hour = now.getHours();
-        var timeGreeting = (hour < 12) ? ((currentLang === "ar") ? "صباح الخير" : "Good morning")
-                          : (hour < 18) ? ((currentLang === "ar") ? "مساء الخير" : "Good afternoon")
-                          : ((currentLang === "ar") ? "مساء الخير" : "Good evening");
-        greetingEl.textContent = ((currentLang === "ar") ? LANG_AR.greeting : LANG_EN.greeting) + ", " + timeGreeting + ", Abdullah Jaja";
+      // Configure sort menu
+      var sortSelect = document.getElementById("sortSelect");
+      var sortToggleBtn = document.getElementById("sortToggleBtn");
+      window.vitalsDataCache = []; // declare as global
+      if (sortSelect && sortToggleBtn) {
+        // When sort selection changes:
+        sortSelect.addEventListener("change", function() {
+          var sortOption = this.value;
+          if (sortOption === "manual") {
+            // Enter manual sort mode – enable drag sorting.
+            sortToggleBtn.style.display = "inline-block";
+            // Initialize SortableJS on the vitals list if not already initialized.
+            var vitalsContainer = document.getElementById("vitals-list");
+            if (vitalsContainer) {
+              // Destroy previous instance if needed.
+              if (vitalsContainer._sortable) {
+                vitalsContainer._sortable.destroy();
+              }
+              vitalsContainer._sortable = Sortable.create(vitalsContainer, {
+                animation: 150,
+                onEnd: function(evt) {
+                  // After manual drag, update vitalsDataCache based on new DOM order.
+                  var newOrder = [];
+                  Array.from(vitalsContainer.children).forEach(function(col) {
+                    if (col._vitalData) newOrder.push(col._vitalData);
+                  });
+                  // Ensure favorites remain on top.
+                  newOrder.sort(function(a, b) {
+                    return (a.favorite === b.favorite) ? 0 : (a.favorite ? -1 : 1);
+                  });
+                  window.vitalsDataCache = newOrder;
+                  renderVitals(window.vitalsDataCache);
+                }
+              });
+            }
+          } else {
+            // Exit manual mode.
+            sortToggleBtn.style.display = "none";
+            // Perform sorting based on the option.
+            var sortAsc = (sortOption === "nameAsc");
+            if (window.vitalsDataCache.length) {
+              window.vitalsDataCache.sort(function(a, b) {
+                var nameA = (VITALS_TRANSLATION[a.vital_key] && VITALS_TRANSLATION[a.vital_key][AppSettings.language]) || a.vital_key;
+                var nameB = (VITALS_TRANSLATION[b.vital_key] && VITALS_TRANSLATION[b.vital_key][AppSettings.language]) || b.vital_key;
+                if (nameA < nameB) return sortAsc ? -1 : 1;
+                if (nameA > nameB) return sortAsc ? 1 : -1;
+                return 0;
+              });
+              // Force favorites to top.
+              window.vitalsDataCache.sort(function(a, b) {
+                return (a.favorite === b.favorite) ? 0 : (a.favorite ? -1 : 1);
+              });
+              renderVitals(window.vitalsDataCache);
+            }
+          }
+        });
       }
       
-      var ageEl = document.getElementById("user-age");
-      if (ageEl) {
-        if (isNaN(AppSettings.age) || AppSettings.age === null) {
-          ageEl.textContent = (currentLang === "ar") ? LANG_AR.age + ": N/A" : LANG_EN.age + ": N/A";
-        } else {
-          ageEl.textContent = (currentLang === "ar") ? LANG_AR.age + ": " + AppSettings.age : LANG_EN.age + ": " + AppSettings.age;
-        }
-      }
-      
-      // Search clear button behavior
+      // Configure search clear button behavior
       var searchEl = document.getElementById("search");
       var clearSearchBtn = document.getElementById("clearSearchBtn");
       if (searchEl && clearSearchBtn) {
         searchEl.addEventListener("input", function() {
           clearSearchBtn.style.display = (this.value.trim().length > 0) ? "block" : "none";
+          if (this.value.trim().length > 0 && fuse) {
+            var results = fuse.search(this.value.trim());
+            var filtered = results.map(function(result) { return result.item; });
+            renderVitals(filtered);
+          } else {
+            renderVitals(window.vitalsDataCache);
+          }
         });
         clearSearchBtn.addEventListener("click", function() {
           searchEl.value = "";
           clearSearchBtn.style.display = "none";
-          if (typeof window.loadVitals === "function") {
-            window.loadVitals();
-          }
+          renderVitals(window.vitalsDataCache);
         });
       }
       
@@ -225,6 +360,12 @@
         console.error("loadVitals function not found.");
       }
     });
+  </script>
+  
+  <script src="lib/bootstrap.bundle.min.js"></script>
+  <script src="lib/aos.js"></script>
+  <script>
+    AOS.init();
   </script>
 </body>
 </html>
