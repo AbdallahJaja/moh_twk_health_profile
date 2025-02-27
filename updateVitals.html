@@ -1,140 +1,282 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Update / View Vitals</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- AOS for animations -->
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <title id="pageTitle">Vital Details</title>
+  <!-- Local Bootstrap CSS -->
+  <link href="lib/bootstrap.min.css" rel="stylesheet" />
+  <!-- Local AOS CSS -->
+  <link href="lib/aos.css" rel="stylesheet" />
+  <!-- Custom styles for Vital Details -->
   <style>
     body { background: #f8f9fa; }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: transform 0.3s; }
-    .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1050; }
-    .shimmer-wrapper {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      height: 100px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    .floating-back { position: fixed; top: 80px; left: 10px; z-index: 1100; }
+    .container { margin-top: 80px; }
+    .detail-header { margin-bottom: 20px; }
+    .detail-header h2 { font-weight: bold; }
+    .detail-section { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .list-group-item { display: flex; justify-content: space-between; align-items: center; }
+    .action-btn { margin-left: 5px; }
+    /* Top Navigation Bar styles (shared with modern_vitals) */
+    .navbar { margin-bottom: 20px; }
   </style>
   
-  <!-- Google Maps API (async, defer) -->
+  <!-- Local Google Maps API (async, defer) -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+  <!-- Local AOS JS -->
+  <script src="lib/aos.js"></script>
   
+  <!-- External JS files -->
   <script src="twk_helper.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/apis.js"></script>
-  <script src="js/updateVitals.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      AOS.init();
+      var currentLang = localStorage.getItem("lang") || "en";
+      document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+    });
+  </script>
 </head>
 <body>
-  <!-- Back Button -->
-  <button class="btn btn-outline-primary floating-back" onclick="window.history.back();">Back</button>
-  
-  <div class="container mt-5 pt-5" data-aos="fade-up">
-    <!-- User Header -->
-    <div class="d-flex align-items-center mb-4">
-      <img id="user-image" class="rounded-circle me-3" width="60" height="60" alt="User Image">
-      <div>
-        <h4 id="greeting">Hi, Abdullah Jaja</h4>
-        <p id="user-age" class="mb-0"></p>
+  <!-- Top Navigation Bar (shared with index/modern_vitals) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">MOH Services</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" 
+              aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navContent">
+         <ul class="navbar-nav ms-auto">
+           <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+           <li class="nav-item"><a class="nav-link" href="modern_vitals.html">Vitals</a></li>
+           <li class="nav-item"><a class="nav-link" href="visitsCalendar.html">Visits</a></li>
+           <li class="nav-item"><a class="nav-link" href="appointmentsWizard.html">Appointments</a></li>
+         </ul>
       </div>
     </div>
-    <!-- Search Box -->
-    <div class="mb-4">
-      <input type="text" id="search" class="form-control form-control-lg" placeholder="Search vitals..." />
-    </div>
-    <!-- Loading Shimmer -->
-    <div id="loading" class="shimmer-wrapper"></div>
-    <!-- Vitals Cards Grid -->
-    <div id="vitals-list" class="row row-cols-1 row-cols-md-2 g-4"></div>
-    <!-- Digital Twin Section -->
-    <div id="digital-twin" class="mt-4 p-3 border rounded bg-white shadow-sm">
-      <h5>Digital Twin Insights</h5>
-      <div id="twin-insights">Calculating insights...</div>
+  </nav>
+  
+  <div class="container" data-aos="fade-up">
+    <div id="vitalDetailsContainer" class="detail-section">
+      <!-- Vital details will be injected here -->
     </div>
   </div>
   
-  <!-- Edit Modal (for update vitals: only for items 1–13) -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content" data-aos="zoom-in">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editModalLabel">Edit Value</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="edit-form">
-            <input type="hidden" id="edit-metric-id" />
-            <div class="mb-3">
-              <label for="edit-metric-value" class="form-label">Value</label>
-              <input type="text" id="edit-metric-value" class="form-control" />
-            </div>
-            <div id="edit-error" class="text-danger"></div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="save-edit-btn">Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Local Bootstrap Bundle -->
+  <script src="lib/bootstrap.bundle.min.js"></script>
   
-  <!-- Info Modal -->
-  <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content" data-aos="fade-up">
-        <div class="modal-header">
-          <h5 class="modal-title" id="infoModalLabel">Vital Information</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="infoModalBody"></div>
-        <div class="modal-footer">
-          <button id="moreInfoBtn" class="btn btn-link btn-sm">More Info</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Google Maps Modal -->
-  <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content" data-aos="zoom-in">
-        <div class="modal-header">
-          <h5 class="modal-title" id="mapModalLabel">Location</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div id="map" style="height: 400px;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Toast Notification for Copy -->
-  <div class="toast-container">
-    <div id="copyToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body">Copied to clipboard!</div>
-    </div>
-  </div>
-  
-  <!-- Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- AOS JS for animations -->
-  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
-    AOS.init();
+    document.addEventListener("DOMContentLoaded", function() {
+      var currentLang = localStorage.getItem("lang") || "en";
+      
+      // Set page title based on language
+      var pageTitleEl = document.getElementById("pageTitle");
+      if (pageTitleEl) {
+        pageTitleEl.textContent = (currentLang === "ar") ? LANG_AR.vitalDetailsTitle : LANG_EN.vitalDetailsTitle;
+      }
+      
+      // Retrieve the selected vital from sessionStorage
+      var vitalDataStr = sessionStorage.getItem("selectedVital");
+      if (!vitalDataStr) {
+        document.getElementById("vitalDetailsContainer").innerHTML = "<p>" + ((currentLang === "ar") ? "لم يتم تحديد حالة صحية." : "No vital selected.") + "</p>";
+        return;
+      }
+      
+      try {
+        var vital = JSON.parse(vitalDataStr);
+        console.log("Selected vital data:", vital);
+      } catch(e) {
+        console.error("Error parsing selected vital:", e);
+        document.getElementById("vitalDetailsContainer").innerHTML = "<p>Error loading vital details.</p>";
+        return;
+      }
+      
+      // Log the parsed vital (for debugging)
+      console.log("Parsed vital:", vital);
+      
+      // Build the vital details HTML
+      var container = document.getElementById("vitalDetailsContainer");
+      container.innerHTML = "";
+      
+      // Header with vital name (localized)
+      var vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][AppSettings.language]) || vital.vital_key;
+      var header = document.createElement("div");
+      header.className = "detail-header";
+      var h2 = document.createElement("h2");
+      h2.textContent = vitalName;
+      header.appendChild(h2);
+      container.appendChild(header);
+      
+      // Description section
+      if (vital.description) {
+        var desc = document.createElement("p");
+        desc.textContent = vital.description;
+        container.appendChild(desc);
+      }
+      
+      // Render value(s)
+      var valueSection = document.createElement("div");
+      if (vital.type === "list" && Array.isArray(vital.value)) {
+        // Render as a list with each item in a row that has copy, select, delete actions.
+        var listGroup = document.createElement("ul");
+        listGroup.className = "list-group";
+        vital.value.forEach(function(item, index) {
+          var li = document.createElement("li");
+          li.className = "list-group-item d-flex justify-content-between align-items-center";
+          li.textContent = item;
+          
+          // Action buttons container
+          var btnContainer = document.createElement("div");
+          
+          // Copy button for each item
+          var copyBtn = document.createElement("button");
+          copyBtn.className = "btn btn-secondary btn-sm action-btn";
+          copyBtn.textContent = (currentLang === "ar") ? LANG_AR.copy : LANG_EN.copy;
+          copyBtn.onclick = function(e) {
+            e.stopPropagation();
+            navigator.clipboard.writeText(item)
+              .then(function() {
+                alert((currentLang === "ar") ? "تم النسخ" : "Copied");
+              })
+              .catch(function(err) {
+                console.error("Copy failed:", err);
+              });
+          };
+          btnContainer.appendChild(copyBtn);
+          
+          // Delete button for multi-select (here we assume single delete for simplicity)
+          var delBtn = document.createElement("button");
+          delBtn.className = "btn btn-danger btn-sm action-btn";
+          delBtn.textContent = (currentLang === "ar") ? LANG_AR.delete : LANG_EN.delete;
+          delBtn.onclick = function(e) {
+            e.stopPropagation();
+            if (confirm((currentLang === "ar") ? "هل أنت متأكد من الحذف؟" : "Are you sure you want to delete this item?")) {
+              // Remove the item from the list and update vital.value
+              vital.value.splice(index, 1);
+              // Optionally, call a delete API here
+              renderVitalDetails(vital);
+            }
+          };
+          btnContainer.appendChild(delBtn);
+          
+          li.appendChild(btnContainer);
+          listGroup.appendChild(li);
+        });
+        valueSection.appendChild(listGroup);
+      } else {
+        // Render a simple text value
+        var p = document.createElement("p");
+        p.textContent = vital.value + " " + (vital.unit || "");
+        valueSection.appendChild(p);
+      }
+      container.appendChild(valueSection);
+      
+      // More info link
+      if (vital.more_info) {
+        var moreInfoLink = document.createElement("a");
+        moreInfoLink.href = vital.more_info;
+        moreInfoLink.target = "_blank";
+        moreInfoLink.textContent = (currentLang === "ar") ? "مزيد من المعلومات" : "More Info";
+        container.appendChild(moreInfoLink);
+      }
+      
+      // Digital twin insights (if applicable)
+      var twinInsight = document.createElement("p");
+      twinInsight.className = "mt-3 text-muted";
+      twinInsight.textContent = (currentLang === "ar")
+        ? "هذه البيانات تساعد على الرعاية الوقائية والتنبؤية."
+        : "These details help in preventive and predictive care.";
+      container.appendChild(twinInsight);
+      
+      // Optionally log an event – check for firebase before calling
+      if (typeof firebase !== "undefined") {
+        firebase.analytics().logEvent("vital_details_view", { vitalKey: vital.vital_key });
+      }
+      
+    });
+    
+    // Helper function to re-render vital details in case of deletion or update
+    function renderVitalDetails(vital) {
+      // For simplicity, we re-run the same code as above.
+      // In production you might extract this into a separate function.
+      var container = document.getElementById("vitalDetailsContainer");
+      container.innerHTML = "";
+      var vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][AppSettings.language]) || vital.vital_key;
+      var header = document.createElement("div");
+      header.className = "detail-header";
+      var h2 = document.createElement("h2");
+      h2.textContent = vitalName;
+      header.appendChild(h2);
+      container.appendChild(header);
+      
+      if (vital.description) {
+        var desc = document.createElement("p");
+        desc.textContent = vital.description;
+        container.appendChild(desc);
+      }
+      
+      var valueSection = document.createElement("div");
+      if (vital.type === "list" && Array.isArray(vital.value)) {
+        var listGroup = document.createElement("ul");
+        listGroup.className = "list-group";
+        vital.value.forEach(function(item, index) {
+          var li = document.createElement("li");
+          li.className = "list-group-item d-flex justify-content-between align-items-center";
+          li.textContent = item;
+          var btnContainer = document.createElement("div");
+          var copyBtn = document.createElement("button");
+          copyBtn.className = "btn btn-secondary btn-sm action-btn";
+          copyBtn.textContent = (localStorage.getItem("lang") === "ar") ? LANG_AR.copy : LANG_EN.copy;
+          copyBtn.onclick = function(e) {
+            e.stopPropagation();
+            navigator.clipboard.writeText(item)
+              .then(function() {
+                alert((localStorage.getItem("lang") === "ar") ? "تم النسخ" : "Copied");
+              })
+              .catch(function(err) {
+                console.error("Copy failed:", err);
+              });
+          };
+          btnContainer.appendChild(copyBtn);
+          var delBtn = document.createElement("button");
+          delBtn.className = "btn btn-danger btn-sm action-btn";
+          delBtn.textContent = (localStorage.getItem("lang") === "ar") ? LANG_AR.delete : LANG_EN.delete;
+          delBtn.onclick = function(e) {
+            e.stopPropagation();
+            if (confirm((localStorage.getItem("lang") === "ar") ? "هل أنت متأكد من الحذف؟" : "Are you sure you want to delete this item?")) {
+              vital.value.splice(index, 1);
+              renderVitalDetails(vital);
+            }
+          };
+          btnContainer.appendChild(delBtn);
+          li.appendChild(btnContainer);
+          listGroup.appendChild(li);
+        });
+        valueSection.appendChild(listGroup);
+      } else {
+        var p = document.createElement("p");
+        p.textContent = vital.value + " " + (vital.unit || "");
+        valueSection.appendChild(p);
+      }
+      container.appendChild(valueSection);
+      
+      if (vital.more_info) {
+        var moreInfoLink = document.createElement("a");
+        moreInfoLink.href = vital.more_info;
+        moreInfoLink.target = "_blank";
+        moreInfoLink.textContent = (localStorage.getItem("lang") === "ar") ? "مزيد من المعلومات" : "More Info";
+        container.appendChild(moreInfoLink);
+      }
+      
+      var twinInsight = document.createElement("p");
+      twinInsight.className = "mt-3 text-muted";
+      twinInsight.textContent = (localStorage.getItem("lang") === "ar")
+        ? "هذه البيانات تساعد على الرعاية الوقائية والتنبؤية."
+        : "These details help in preventive and predictive care.";
+      container.appendChild(twinInsight);
+    }
   </script>
-</body>
-</html>

@@ -98,8 +98,8 @@
   <script src="lib/fuse.min.js"></script>
   <!-- Local AOS JS -->
   <script src="lib/aos.js"></script>
-  <!-- Local SortableJS (make sure this file exists in your lib folder) -->
-  <script src="lib/Sortable/Sortable.js"></script>
+  <!-- Local SortableJS (ensure the file exists at this path) -->
+  <script src="lib/Sortable.min.js"></script>
   
   <!-- External JS files (order is important) -->
   <script src="twk_helper.js"></script>
@@ -142,7 +142,7 @@
   <div class="container mt-5 pt-5" data-aos="fade-up">
     <!-- User Header -->
     <div class="d-flex align-items-center mb-4">
-      <!-- Avatar: Use AppSettings.userImage if available; otherwise, fallback to an inline SVG with first letter -->
+      <!-- Avatar: Use AppSettings.userImage if provided; otherwise, fallback to an inline SVG with first letter -->
       <img id="user-avatar" class="rounded-circle me-3" width="60" height="60" alt="User Avatar">
       <div>
         <h4 id="greeting">Hi, Abdullah Jaja</h4>
@@ -215,7 +215,7 @@
   
   <script src="lib/bootstrap.bundle.min.js"></script>
   <script src="lib/aos.js"></script>
-  <!-- Note: Ensure Sortable/Sortable.js is loaded before this script -->
+  <script src="lib/Sortable.min.js"></script>
   <script>
     AOS.init();
     
@@ -224,28 +224,36 @@
       document.documentElement.lang = currentLang;
       document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
       
-      // Set page title and greeting
+      // Set page title
       var pageTitleEl = document.getElementById("pageTitle");
       if (pageTitleEl) {
         pageTitleEl.textContent = (currentLang === "ar") ? LANG_AR.vitalsDashboardTitle : LANG_EN.vitalsDashboardTitle;
       }
+      
+      // Update greeting with avatar and dynamic time-based greeting
       var greetingEl = document.getElementById("greeting");
       if (greetingEl) {
+        console.log("Current language:", currentLang);
+        console.log("LANG_EN.greeting:", LANG_EN.greeting);
+        console.log("LANG_AR.greeting:", LANG_AR.greeting);
         var now = new Date();
         var hour = now.getHours();
-        var timeGreeting = (hour < 12) ? ((currentLang === "ar") ? "صباح الخير" : "Good morning")
-                         : (hour < 18) ? ((currentLang === "ar") ? "مساء الخير" : "Good afternoon")
-                         : ((currentLang === "ar") ? "مساء الخير" : "Good evening");
-        greetingEl.textContent = ((currentLang === "ar") ? LANG_AR.greeting : LANG_EN.greeting) + ", " + timeGreeting + ", Abdullah Jaja";
+        var timeGreeting = hour < 12 ? (currentLang === "ar" ? "صباح الخير" : "Good morning")
+                          : hour < 18 ? (currentLang === "ar" ? "مساء الخير" : "Good afternoon")
+                          : (currentLang === "ar" ? "مساء الخير" : "Good evening");
+        greetingEl.textContent = (currentLang === "ar" ? LANG_AR.greeting : LANG_EN.greeting) + ", " + timeGreeting + ", Abdullah Jaja";
+      } else {
+        console.warn("Greeting element not found.");
       }
+      
       var ageEl = document.getElementById("user-age");
       if (ageEl) {
         ageEl.textContent = (isNaN(AppSettings.age) || AppSettings.age === null)
-          ? ((currentLang === "ar") ? LANG_AR.age + ": N/A" : LANG_EN.age + ": N/A")
-          : ((currentLang === "ar") ? LANG_AR.age + ": " + AppSettings.age : LANG_EN.age + ": " + AppSettings.age);
+          ? (currentLang === "ar" ? LANG_AR.age + ": N/A" : LANG_EN.age + ": N/A")
+          : (currentLang === "ar" ? LANG_AR.age + ": " + AppSettings.age : LANG_EN.age + ": " + AppSettings.age);
       }
       
-      // Avatar: use AppSettings.userImage if available; otherwise, fallback to inline first-letter avatar.
+      // Configure avatar: use AppSettings.userImage if available; otherwise, fallback to inline SVG
       var avatarEl = document.getElementById("user-avatar");
       if (avatarEl) {
         if (AppSettings.userImage && AppSettings.userImage.trim() !== "") {
@@ -269,7 +277,7 @@
       // Configure sort menu
       var sortSelect = document.getElementById("sortSelect");
       var sortToggleBtn = document.getElementById("sortToggleBtn");
-      window.vitalsDataCache = []; // Declare as global variable
+      window.vitalsDataCache = []; // Declare global vitals cache
       if (sortSelect && sortToggleBtn) {
         sortSelect.addEventListener("change", function() {
           var sortOption = this.value;
@@ -283,8 +291,12 @@
                 onEnd: function(evt) {
                   var newOrder = [];
                   Array.from(vitalsContainer.children).forEach(function(col) {
-                    if (col._vitalData) newOrder.push(col._vitalData);
+                    var card = col.firstElementChild;
+                    if (card && card._vitalData) {
+                      newOrder.push(card._vitalData);
+                    }
                   });
+                  // Ensure favorites remain at the top.
                   newOrder.sort(function(a, b) {
                     return (a.favorite === b.favorite) ? 0 : (a.favorite ? -1 : 1);
                   });
