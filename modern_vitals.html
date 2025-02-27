@@ -4,17 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title id="pageTitle">MOH Vitals – Modern UX</title>
+  
   <!-- Local Bootstrap CSS -->
   <link href="lib/bootstrap.min.css" rel="stylesheet" />
   <!-- Local AOS CSS -->
   <link href="lib/aos.css" rel="stylesheet" />
+  
   <style>
     body {
       background: #f8f9fa;
     }
     .card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
       transition: transform 0.3s;
     }
     .toast-container {
@@ -60,7 +62,7 @@
     #sortMenu select {
       margin-right: 10px;
     }
-    /* Drag & drop: add a subtle border during drag */
+    /* Drag & drop visual feedback */
     .dragging {
       opacity: 0.6;
       border: 2px dashed #007bff;
@@ -76,14 +78,14 @@
     .fav-btn.active {
       color: gold;
     }
-    /* Native-like sort animation classes */
+    /* Native-like sort animations */
     .ios-sort .card {
       transition: transform 0.4s ease, opacity 0.4s ease;
     }
     .android-sort .card {
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
-    /* Modal override */
+    /* Modal styling override */
     .modal-header {
       background: #007bff;
       color: #fff;
@@ -96,10 +98,10 @@
   <script src="lib/fuse.min.js"></script>
   <!-- Local AOS JS -->
   <script src="lib/aos.js"></script>
-  <!-- Local SortableJS -->
-  <script src="lib/Sortable.js"></script>
+  <!-- Local SortableJS (make sure this file exists in your lib folder) -->
+  <script src="lib/Sortable/Sortable.js"></script>
   
-  <!-- External JS files -->
+  <!-- External JS files (order is important) -->
   <script src="twk_helper.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/settings.js"></script>
@@ -140,7 +142,7 @@
   <div class="container mt-5 pt-5" data-aos="fade-up">
     <!-- User Header -->
     <div class="d-flex align-items-center mb-4">
-      <!-- Avatar: use AppSettings.userImage if provided; otherwise, fallback to inline first-letter avatar -->
+      <!-- Avatar: Use AppSettings.userImage if available; otherwise, fallback to an inline SVG with first letter -->
       <img id="user-avatar" class="rounded-circle me-3" width="60" height="60" alt="User Avatar">
       <div>
         <h4 id="greeting">Hi, Abdullah Jaja</h4>
@@ -213,7 +215,7 @@
   
   <script src="lib/bootstrap.bundle.min.js"></script>
   <script src="lib/aos.js"></script>
-  <script src="lib/Sortable.min.js"></script>
+  <!-- Note: Ensure Sortable/Sortable.js is loaded before this script -->
   <script>
     AOS.init();
     
@@ -243,7 +245,7 @@
           : ((currentLang === "ar") ? LANG_AR.age + ": " + AppSettings.age : LANG_EN.age + ": " + AppSettings.age);
       }
       
-      // Avatar: Use AppSettings.userImage if exists; otherwise, fallback to first letter avatar.
+      // Avatar: use AppSettings.userImage if available; otherwise, fallback to inline first-letter avatar.
       var avatarEl = document.getElementById("user-avatar");
       if (avatarEl) {
         if (AppSettings.userImage && AppSettings.userImage.trim() !== "") {
@@ -267,30 +269,22 @@
       // Configure sort menu
       var sortSelect = document.getElementById("sortSelect");
       var sortToggleBtn = document.getElementById("sortToggleBtn");
-      window.vitalsDataCache = []; // declare as global
+      window.vitalsDataCache = []; // Declare as global variable
       if (sortSelect && sortToggleBtn) {
-        // When sort selection changes:
         sortSelect.addEventListener("change", function() {
           var sortOption = this.value;
           if (sortOption === "manual") {
-            // Enter manual sort mode – enable drag sorting.
             sortToggleBtn.style.display = "inline-block";
-            // Initialize SortableJS on the vitals list if not already initialized.
             var vitalsContainer = document.getElementById("vitals-list");
             if (vitalsContainer) {
-              // Destroy previous instance if needed.
-              if (vitalsContainer._sortable) {
-                vitalsContainer._sortable.destroy();
-              }
+              if (vitalsContainer._sortable) { vitalsContainer._sortable.destroy(); }
               vitalsContainer._sortable = Sortable.create(vitalsContainer, {
                 animation: 150,
                 onEnd: function(evt) {
-                  // After manual drag, update vitalsDataCache based on new DOM order.
                   var newOrder = [];
                   Array.from(vitalsContainer.children).forEach(function(col) {
                     if (col._vitalData) newOrder.push(col._vitalData);
                   });
-                  // Ensure favorites remain on top.
                   newOrder.sort(function(a, b) {
                     return (a.favorite === b.favorite) ? 0 : (a.favorite ? -1 : 1);
                   });
@@ -300,9 +294,7 @@
               });
             }
           } else {
-            // Exit manual mode.
             sortToggleBtn.style.display = "none";
-            // Perform sorting based on the option.
             var sortAsc = (sortOption === "nameAsc");
             if (window.vitalsDataCache.length) {
               window.vitalsDataCache.sort(function(a, b) {
@@ -312,7 +304,6 @@
                 if (nameA > nameB) return sortAsc ? 1 : -1;
                 return 0;
               });
-              // Force favorites to top.
               window.vitalsDataCache.sort(function(a, b) {
                 return (a.favorite === b.favorite) ? 0 : (a.favorite ? -1 : 1);
               });
