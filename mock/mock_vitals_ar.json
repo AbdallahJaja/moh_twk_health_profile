@@ -1,223 +1,322 @@
 {
   "user": {
-    "name": "عبدالله الجاجة",
+    "name": "عبد العزيز الناجم",
     "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABFElEQVR4Xu3XwQ3CMAwF0PH+/68d7RFrR1LwChVSRb+dv7J3rjIc4JwnEkSJEiRIkySXjH67ADwwDx58r3uKBlzrL4vPjZkAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECPwS/CwD+WSJb19DoAwIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECPgQ8xAw4t1D8ZfB5QKj6X7TUMIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBDoD/AAN+SgLdlsS+VAAAAAElFTkSuQmCC"
   },
   "vitals": [
     {
       "id": 1,
       "vital_key": "drug_allergy_list",
-      "value": ["بنسلين", "أدوية السلفا"],
+      "value": ["البنسلين", "أدوية السلفا", "اللاتكس"],
       "type": "list",
-      "description": "قائمة بالأدوية التي يتحسس منها المستخدم، ضرورية لتفادي وصف الأدوية الخطرة.",
-      "more_info": "https://www.moh.gov.sa/health/allergies/drug"
+      "list_format": "string",
+      "description": "قائمة الأدوية التي يعاني المستخدم من الحساسية تجاهها، وهي ضرورية لوصفات الأدوية الآمنة.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/drug",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 2,
       "vital_key": "food_allergy_list",
-      "value": ["الفول السوداني", "المحاريات"],
+      "value": ["الفول السوداني", "المحاريات", "منتجات الألبان"],
       "type": "list",
-      "description": "قائمة بالأطعمة التي يتحسس منها المستخدم وقد تسبب ردود فعل شديدة.",
-      "more_info": "https://www.moh.gov.sa/health/allergies/food"
+      "list_format": "string",
+      "description": "قائمة الأطعمة التي يعاني المستخدم من الحساسية تجاهها، وقد تسبب ردود فعل شديدة.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/food",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 3,
       "vital_key": "substance_allergy_list",
-      "value": ["حبوب اللقاح", "الغبار"],
+      "value": ["حبوب اللقاح", "الغبار", "العفن"],
       "type": "list",
-      "description": "المواد البيئية التي تحفز ردود فعل تحسسية.",
-      "more_info": "https://www.moh.gov.sa/health/allergies/environmental"
+      "list_format": "string",
+      "description": "المواد البيئية التي تحفز ردود الفعل التحسسية.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/environmental",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 4,
       "vital_key": "bmi",
-      "value": 24.5,
-      "unit": "كجم/م²",
+      "value": 23.7,
+      "unit": "kg/m²",
       "type": "numeric",
-      "description": "مؤشر كتلة الجسم الذي يقيس نسبة الدهون في الجسم بناءً على الطول والوزن.",
-      "more_info": "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight"
+      "description": "مؤشر كتلة الجسم المحسوب من الوزن والطول.",
+      "more_info": "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 5,
       "vital_key": "blood_pressure",
       "value": "120/80",
-      "unit": "مم زئبق",
+      "unit": "mmHg",
       "type": "string",
       "description": "قياس ضغط الدم الذي يشير إلى القيم الانقباضية والانبساطية.",
-      "more_info": "https://www.heart.org/ar/health-topics/high-blood-pressure"
+      "more_info": "https://www.heart.org/en/health-topics/high-blood-pressure",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 6,
       "vital_key": "blood_sugar",
-      "value": 95,
-      "unit": "ملغم/ديسيلتر",
+      "value": 90,
+      "unit": "mg/dL",
       "type": "numeric",
-      "description": "مستوى سكر الدم المستخدم لمراقبة الصحة الأيضية.",
-      "more_info": "https://www.diabetes.org/ar"
+      "description": "مستوى السكر في الدم المستخدم لمراقبة الصحة الأيضية.",
+      "more_info": "https://www.diabetes.org/diabetes",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 7,
       "vital_key": "body_mass",
-      "value": 70,
-      "unit": "كجم",
+      "value": 68,
+      "unit": "kg",
       "type": "numeric",
-      "description": "الوزن الكلي للجسم بما في ذلك الدهون والعضلات والعظام.",
-      "more_info": "https://www.nhlbi.nih.gov/health/educational/lose_wt/index.htm"
+      "description": "إجمالي كتلة الجسم بما في ذلك الدهون والعضلات والعظام.",
+      "more_info": "https://www.nhlbi.nih.gov/health/educational/lose_wt/index.htm",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 8,
       "vital_key": "waist_circumference",
-      "value": 85,
-      "unit": "سم",
+      "value": 80,
+      "unit": "cm",
       "type": "numeric",
-      "description": "مؤشر دهون البطن؛ تشير القيم العالية إلى مخاطر صحية متزايدة.",
-      "more_info": "https://www.cdc.gov/healthyweight/assessing/index.html"
+      "description": "مؤشر لدهون البطن؛ القيم العالية تشير إلى زيادة مخاطر صحية.",
+      "more_info": "https://www.cdc.gov/healthyweight/assessing/index.html",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 9,
       "vital_key": "blood_type",
-      "value": "O+",
+      "value": "A+",
       "type": "string",
-      "description": "فصيلة دم المستخدم، مهمة في حالات الطوارئ والنقل الدموي.",
-      "more_info": "https://www.redcrossblood.org/ar/donate-blood/blood-types.html"
+      "description": "فصيلة دم المستخدم؛ مهمة لعمليات نقل الدم والطوارئ.",
+      "more_info": "https://www.redcrossblood.org/donate-blood/blood-types.html",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 10,
       "vital_key": "user_health_conditions",
-      "value": ["ارتفاع ضغط الدم"],
+      "value": ["ارتفاع ضغط الدم", "الربو"],
       "type": "list",
-      "description": "الحالات الصحية التي تم تشخيصها أو الإبلاغ عنها من قبل المستخدم.",
-      "more_info": "https://www.moh.gov.sa/health/conditions"
+      "list_format": "string",
+      "description": "الحالات الصحية التي تم تشخيصها أو الإبلاغ عنها ذاتياً من قبل المستخدم.",
+      "more_info": "https://www.moh.gov.sa/health/conditions",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 11,
       "vital_key": "weight",
-      "value": 75,
-      "unit": "كجم",
+      "value": 68,
+      "unit": "kg",
       "type": "numeric",
-      "description": "الوزن الحالي للجسم.",
-      "more_info": "https://www.cdc.gov/healthyweight/index.html"
+      "description": "الوزن الحالي.",
+      "more_info": "https://www.cdc.gov/healthyweight/index.html",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 12,
       "vital_key": "height",
-      "value": 175,
-      "unit": "سم",
+      "value": 172,
+      "unit": "cm",
       "type": "numeric",
-      "description": "ارتفاع المستخدم، يُستخدم لحساب مؤشر كتلة الجسم.",
-      "more_info": "https://www.cdc.gov/nchs/fastats/body-measurements.htm"
+      "description": "طول المستخدم، المستخدم في حساب مؤشر كتلة الجسم.",
+      "more_info": "https://www.cdc.gov/nchs/fastats/body-measurements.htm",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 13,
       "vital_key": "family_medical_history",
-      "value": ["سكري", "أمراض القلب"],
+      "value": ["داء السكري", "أمراض القلب"],
       "type": "list",
-      "description": "الحالات الصحية الوراثية في عائلة المستخدم.",
-      "more_info": "https://www.moh.gov.sa/health/family-history"
+      "list_format": "string",
+      "description": "الحالات الصحية الوراثية الموجودة في عائلة المستخدم.",
+      "more_info": "https://www.moh.gov.sa/health/family-history",
+      "editable": true,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 14,
       "vital_key": "doctor_allergy_list",
-      "value": ["أسبرين"],
+      "value": ["الأسبرين"],
       "type": "list",
-      "description": "الحساسيات التي سجلها الطبيب.",
-      "more_info": "https://www.moh.gov.sa/health/allergies/doctor"
+      "list_format": "string",
+      "description": "الحساسية المسجلة من قبل طبيب المستخدم.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/doctor",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 15,
       "vital_key": "user_allergy_list",
-      "value": ["بنسلين"],
+      "value": ["البنسلين"],
       "type": "list",
-      "description": "الحساسيات التي يذكرها المستخدم بنفسه.",
-      "more_info": "https://www.moh.gov.sa/health/allergies/user"
+      "list_format": "string",
+      "description": "الحساسية التي يُبلغ عنها المستخدم بنفسه.",
+      "more_info": "https://www.moh.gov.sa/health/allergies/user",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 16,
       "vital_key": "health_id",
-      "value": "1234567890",
+      "value": "9876543210",
       "type": "string",
-      "description": "رقم الهوية الصحية الفريد.",
-      "more_info": "https://www.moh.gov.sa/health/id"
+      "description": "رقم التعريف الصحي الفريد.",
+      "more_info": "https://www.moh.gov.sa/health/id",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 17,
       "vital_key": "previous_medications",
-      "value": ["باراسيتامول"],
+      "value": ["أيبوبروفين", "باراسيتامول"],
       "type": "list",
-      "description": "الأدوية التي تم تناولها سابقًا.",
-      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+      "list_format": "string",
+      "description": "الأدوية التي تم تناولها سابقاً.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 18,
       "vital_key": "current_medications",
       "value": ["ميتفورمين"],
       "type": "list",
-      "description": "الأدوية الحالية التي يتناولها المستخدم.",
-      "more_info": "https://www.moh.gov.sa/health/medications/current"
+      "list_format": "string",
+      "description": "الأدوية التي يتناولها المستخدم حالياً.",
+      "more_info": "https://www.moh.gov.sa/health/medications/current",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 19,
       "vital_key": "general_vaccinations",
-      "value": ["كوفيد-19", "أنفلونزا"],
+      "value": [
+        {
+          "name": "Covid-19",
+          "date": "2022-03-15",
+          "dose": "الثانية"
+        },
+        {
+          "name": "Flu",
+          "date": "2022-10-01",
+          "dose": "سنوي"
+        },
+        {
+          "name": "Tetanus",
+          "date": "2021-06-20",
+          "dose": "معزز"
+        }
+      ],
       "type": "list",
-      "description": "التطعيمات العامة التي حصل عليها المستخدم.",
-      "more_info": "https://www.moh.gov.sa/health/vaccinations/general"
+      "list_format": "object",
+      "description": "التطعيمات العامة التي تلقاها المستخدم مع التواريخ ومعلومات الجرعة.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/general",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 20,
       "vital_key": "children_vaccinations",
-      "value": ["شلل الأطفال", "الحصبة"],
+      "value": [
+        {
+          "name": "Polio",
+          "date": "2020-05-10",
+          "dose": "الأولى"
+        },
+        {
+          "name": "Measles",
+          "date": "2020-06-15",
+          "dose": "الأولى"
+        },
+        {
+          "name": "Hepatitis B",
+          "date": "2020-07-20",
+          "dose": "الأولى"
+        }
+      ],
       "type": "list",
-      "description": "تطعيمات الطفولة.",
-      "more_info": "https://www.moh.gov.sa/health/vaccinations/children"
+      "list_format": "object",
+      "description": "تطعيمات الطفولة مع التواريخ ومعلومات الجرعة.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/children",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 21,
       "vital_key": "doctor_health_conditions",
-      "value": ["ارتفاع ضغط الدم"],
+      "value": ["ارتفاع ضغط الدم", "داء السكري"],
       "type": "list",
-      "description": "الحالات الصحية التي سجلها الطبيب.",
-      "more_info": "https://www.moh.gov.sa/health/conditions/doctor"
+      "list_format": "string",
+      "description": "الحالات الصحية التي سجلها أخصائي الرعاية الصحية.",
+      "more_info": "https://www.moh.gov.sa/health/conditions/doctor",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 22,
       "vital_key": "previous_medications_list",
-      "value": ["إيبوبروفين"],
+      "value": ["أيبوبروفين", "أموكسيسيلين"],
       "type": "list",
-      "description": "قائمة مفصلة بالأدوية التي تم وصفها سابقًا.",
-      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+      "list_format": "string",
+      "description": "قائمة مفصلة بالأدوية الموصوفة سابقاً.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 23,
       "vital_key": "surgeries_procedures",
       "value": ["استئصال الزائدة الدودية"],
       "type": "list",
+      "list_format": "string",
       "description": "تاريخ العمليات والإجراءات التي خضع لها المستخدم.",
-      "more_info": "https://www.moh.gov.sa/health/procedures"
+      "more_info": "https://www.moh.gov.sa/health/procedures",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 24,
       "vital_key": "visits",
-      "value": "3 زيارات",
-      "type": "string",
-      "description": "عدد زيارات المنشأة الصحية خلال السنة الماضية.",
-      "more_info": "https://www.moh.gov.sa/health/visits"
+      "value": 3,
+      "unit": "زيارات",
+      "type": "numeric",
+      "description": "عدد زيارات المنشآت الصحية في السنة الماضية.",
+      "more_info": "https://www.moh.gov.sa/health/visits",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 25,
       "vital_key": "lab_test_results",
-      "value": "طبيعي",
+      "value": "طبيعية",
       "type": "string",
-      "description": "نتائج الفحوصات المخبرية الحديثة.",
-      "more_info": "https://www.moh.gov.sa/health/lab-tests"
+      "description": "نتائج الفحوصات المخبرية الأخيرة.",
+      "more_info": "https://www.moh.gov.sa/health/lab-tests",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 26,
       "vital_key": "additional_info",
       "value": "غير متوفر",
       "type": "string",
-      "description": "معلومات إضافية إن وجدت.",
-      "more_info": "https://www.moh.gov.sa/health/info"
+      "description": "معلومات إضافية إن وُجدت.",
+      "more_info": "https://www.moh.gov.sa/health/info",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 27,
@@ -225,64 +324,119 @@
       "value": "مدينة الملك سعود الطبية",
       "coordinates": { "lat": 24.7136, "lng": 46.6753 },
       "type": "location",
-      "description": "المنشأة الصحية التي يتم تسجيل المستخدم بها.",
-      "more_info": "https://www.google.com/search?q=مدينة+الملك+سعود+الطبية"
+      "description": "المنشأة الصحية التي تم تسجيل المستخدم بها.",
+      "more_info": "https://www.google.com/search?q=King+Saud+Medical+City",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 28,
-      "vital_key": "previous_medications_list",
-      "value": ["إيبوبروفين"],
+      "vital_key": "previous_medications_list_dup",
+      "value": ["أيبوبروفين", "أموكسيسيلين"],
       "type": "list",
-      "description": "قائمة مفصلة بالأدوية التي تم وصفها سابقًا.",
-      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+      "list_format": "string",
+      "description": "قائمة مفصلة بالأدوية الموصوفة سابقاً.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 29,
-      "vital_key": "current_medications",
+      "vital_key": "current_medications_dup",
       "value": ["ميتفورمين"],
       "type": "list",
-      "description": "الأدوية التي يتناولها المستخدم حاليًا.",
-      "more_info": "https://www.moh.gov.sa/health/medications/current"
+      "list_format": "string",
+      "description": "الأدوية التي يتناولها المستخدم حالياً.",
+      "more_info": "https://www.moh.gov.sa/health/medications/current",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 30,
-      "vital_key": "general_vaccinations",
-      "value": ["كوفيد-19", "أنفلونزا"],
+      "vital_key": "general_vaccinations_dup",
+      "value": [
+        {
+          "name": "Covid-19",
+          "date": "2022-03-15",
+          "dose": "الثانية"
+        },
+        {
+          "name": "Flu",
+          "date": "2022-10-01",
+          "dose": "سنوي"
+        },
+        {
+          "name": "Hepatitis A",
+          "date": "2021-11-20",
+          "dose": "معزز"
+        }
+      ],
       "type": "list",
-      "description": "التطعيمات العامة التي حصل عليها المستخدم.",
-      "more_info": "https://www.moh.gov.sa/health/vaccinations/general"
+      "list_format": "object",
+      "description": "التطعيمات العامة التي تلقاها المستخدم مع التواريخ ومعلومات الجرعة.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/general",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 31,
-      "vital_key": "children_vaccinations",
-      "value": ["شلل الأطفال", "الحصبة"],
+      "vital_key": "children_vaccinations_dup",
+      "value": [
+        {
+          "name": "Polio",
+          "date": "2020-05-10",
+          "dose": "الأولى"
+        },
+        {
+          "name": "Measles",
+          "date": "2020-06-15",
+          "dose": "الأولى"
+        },
+        {
+          "name": "MMR",
+          "date": "2020-07-20",
+          "dose": "الأولى"
+        }
+      ],
       "type": "list",
-      "description": "تطعيمات الطفولة.",
-      "more_info": "https://www.moh.gov.sa/health/vaccinations/children"
+      "list_format": "object",
+      "description": "تطعيمات الطفولة مع التواريخ ومعلومات الجرعة.",
+      "more_info": "https://www.moh.gov.sa/health/vaccinations/children",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 32,
-      "vital_key": "doctor_health_conditions",
-      "value": ["ارتفاع ضغط الدم"],
+      "vital_key": "doctor_health_conditions_dup",
+      "value": ["ارتفاع ضغط الدم", "داء السكري"],
       "type": "list",
-      "description": "الحالات الصحية التي سجلها الطبيب.",
-      "more_info": "https://www.moh.gov.sa/health/conditions/doctor"
+      "list_format": "string",
+      "description": "الحالات الصحية التي سجلها أخصائي الرعاية الصحية.",
+      "more_info": "https://www.moh.gov.sa/health/conditions/doctor",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 33,
-      "vital_key": "previous_medications_list",
-      "value": ["إيبوبروفين"],
+      "vital_key": "previous_medications_list_another",
+      "value": ["أيبوبروفين", "أسيتامينوفين"],
       "type": "list",
-      "description": "قائمة مفصلة بالأدوية التي تم وصفها سابقًا.",
-      "more_info": "https://www.moh.gov.sa/health/medications/previous"
+      "list_format": "string",
+      "description": "قائمة مفصلة بالأدوية الموصوفة سابقاً.",
+      "more_info": "https://www.moh.gov.sa/health/medications/previous",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     },
     {
       "id": 34,
-      "vital_key": "surgeries_procedures",
-      "value": ["استئصال الزائدة الدودية"],
+      "vital_key": "surgeries_procedures_dup",
+      "value": ["استئصال الزائدة الدودية", "استئصال المرارة"],
       "type": "list",
+      "list_format": "string",
       "description": "تاريخ العمليات والإجراءات التي خضع لها المستخدم.",
-      "more_info": "https://www.moh.gov.sa/health/procedures"
+      "more_info": "https://www.moh.gov.sa/health/procedures",
+      "editable": false,
+      "last_updated": "2023-09-20T12:00:00+03:00"
     }
   ]
 }

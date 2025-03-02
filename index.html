@@ -13,7 +13,7 @@
   <style>
     body {
       padding-top: 70px;
-      /* The background theme will be applied by adding a class from AppSettings.theme */
+      /* Background theming will be applied via AppSettings.theme */
     }
     .service-grid {
       margin-top: 30px;
@@ -40,7 +40,7 @@
       font-size: 1rem;
       font-weight: 600;
     }
-    /* Language switch button styling (flag icon) */
+    /* Language switch button styling using flag icons */
     #langSwitchBtn {
       display: flex;
       align-items: center;
@@ -52,7 +52,7 @@
     }
   </style>
   
-  <!-- Load constants and settings before any DOM manipulation -->
+  <!-- Load constants and settings before DOM manipulation -->
   <script src="js/constants.js"></script>
   <script src="js/settings.js"></script>
   <!-- Optional: Firebase initialization and TWK helper -->
@@ -62,14 +62,14 @@
   <script src="lib/aos.js"></script>
 </head>
 <body>
-  <!-- Placeholder for the shared navigation bar -->
+  <!-- Shared Navigation Bar will be loaded dynamically -->
   <div id="navbarContainer"></div>
   
   <!-- Main Content: Services Grid -->
   <div class="container service-grid" data-aos="fade-up">
     <h2 class="text-center mb-4" id="welcomeMessage"></h2>
     <div class="row">
-      <!-- Vitals Shortcut -->
+      <!-- Unified Health Profile Shortcut (formerly Vitals) -->
       <div class="col-6 col-md-3">
         <a href="modern_vitals.html" class="text-decoration-none">
           <div class="service-card">
@@ -103,49 +103,40 @@
           </div>
         </a>
       </div>
-      <!-- Settings Shortcut -->
-      <div class="col-6 col-md-3">
-        <a href="settings.html" class="text-decoration-none">
-          <div class="service-card">
-            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h12v2H2v-2z"/>
-            </svg>
-            <div class="service-label" id="serviceSettingsLabel"></div>
-          </div>
-        </a>
-      </div>
+      <!-- Settings Shortcut removed -->
     </div>
   </div>
   
   <!-- Local Bootstrap Bundle with Popper -->
   <script src="lib/bootstrap.bundle.min.js"></script>
   
-  <!-- Initialize AOS and then set up page content once DOM and navbar are ready -->
+  <!-- Initialize AOS and set up page content -->
   <script>
     AOS.init();
 
-    // Use DOMContentLoaded to ensure that the page is fully loaded
     document.addEventListener("DOMContentLoaded", function() {
       var currentLang = localStorage.getItem("lang") || "en";
       document.documentElement.lang = currentLang;
       document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
       
-      // Set page title and welcome message using constants
+      // Set page title and welcome message from constants
       document.getElementById("pageTitle").textContent = (currentLang === "ar") ? LANG_AR.homeTitle : LANG_EN.homeTitle;
       document.getElementById("welcomeMessage").textContent = (currentLang === "ar") ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
       
-      // Set service shortcut labels
-      document.getElementById("serviceVitalsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.vitals : LANG_EN.services.vitals;
+      // Set service shortcut labels:
+      // Unified Health Profile label for vitals shortcut
+      document.getElementById("serviceVitalsLabel").textContent = (currentLang === "ar") ? "الملف الصحي الموحد" : "Unified Health Profile";
+      // Visits label
       document.getElementById("serviceVisitsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.visits : LANG_EN.services.visits;
-      document.getElementById("serviceAppointmentsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.appointments : LANG_EN.services.appointments;
-      document.getElementById("serviceSettingsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.settings : LANG_EN.services.settings;
+      // Appointments label (renamed from vitals item to appointments)
+      document.getElementById("serviceAppointmentsLabel").textContent = (currentLang === "ar") ? "المواعيد" : "Appointments";
       
-      // Load the shared navbar and then update the language switch button
+      // Load the shared navbar from navbar.html so that changes are maintained centrally
       fetch("navbar.html")
         .then(function(response) { return response.text(); })
         .then(function(html) {
           document.getElementById("navbarContainer").innerHTML = html;
-          // After navbar is loaded, update the language switch button
+          // Update language switch button in the navbar after loading
           var langSwitchBtn = document.getElementById("langSwitchBtn");
           if (langSwitchBtn) {
             langSwitchBtn.textContent = (currentLang === "en") ? LANG_AR.switchText : LANG_EN.switchText;

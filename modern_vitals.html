@@ -100,7 +100,7 @@
   <script src="lib/aos.js"></script>
   <!-- Local SortableJS (ensure the file exists at this path) -->
   <script src="lib/Sortable.min.js"></script>
-  
+  <script src="js/editListModal.js"></script>
   <!-- External JS files (order is important) -->
   <script src="twk_helper.js"></script>
   <script src="js/constants.js"></script>
@@ -370,5 +370,36 @@
   <script>
     AOS.init();
   </script>
+  
+  <!-- Edit List Modal for List‑Type Vitals -->
+<div class="modal fade" id="editListModal" tabindex="-1" aria-labelledby="editListModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- The title will be set dynamically -->
+        <h5 class="modal-title" id="editListModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Container where each input row will be inserted -->
+        <div id="editListContainer"></div>
+        <!-- Add Row Button -->
+        <button id="addRowBtn" type="button" class="btn btn-outline-primary mt-2">
+          <img src="images/add.svg" alt="Add" style="width:20px;height:20px;">
+        </button>
+      </div>
+      <div class="modal-footer">
+        <!-- Cancel (Back) Button -->
+        <button type="button" id="cancelEditListBtn" class="btn btn-secondary" data-bs-dismiss="modal">
+          <img src="images/back.svg" alt="Back" style="width:20px;height:20px;">
+        </button>
+        <!-- Save Button -->
+        <button type="button" id="saveEditListBtn" class="btn btn-primary">
+          <img src="images/save.svg" alt="Save" style="width:20px;height:20px;">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
