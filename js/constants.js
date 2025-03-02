@@ -5,6 +5,7 @@ const SAVE_VITALS_API_URL = API_BASE_URL + "/user/save_vitals"; // Append /{id} 
 const AUTH_API_URL = "https://www.api.moh.gov.sa/v1/auth/login";
 const VISITS_API_URL = API_BASE_URL + "/user/visits";
 
+
 const LANG_EN = {
   homeTitle: "MOH Services - Home",
   vitalDetailsTitle: "Vital Details",

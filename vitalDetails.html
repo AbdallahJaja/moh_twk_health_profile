@@ -14,7 +14,8 @@
     body {
       background: #f8f9fa;
     }
-    /* Use Bootstrap spacing classes (mt-5 pt-5) to prevent navbar overlap */
+    /* Remove the old margin-top:80px on .container; rely on Bootstrap classes instead */
+    
     .detail-header {
       margin-bottom: 20px;
     }
@@ -27,22 +28,16 @@
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    /* List item styling: use a span for text and a container for buttons */
     .list-group-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .item-text {
-      flex: 1;
-    }
     .action-btn {
       margin-left: 5px;
     }
-    /* Ensure navbar spacing is consistent */
-    .navbar {
-      margin-bottom: 20px;
-    }
+    /* Additional spacing under navbar, if needed:
+       But we rely on "mt-5 pt-5" on the container. */
   </style>
   
   <!-- Local Google Maps API (async, defer) -->
@@ -84,13 +79,14 @@
     </div>
   </nav>
   
-  <!-- Use Bootstrap spacing classes to avoid navbar overlap -->
+  <!-- Use Bootstrap's spacing classes to avoid overlap -->
   <div class="container mt-5 pt-5" data-aos="fade-up">
     <div id="vitalDetailsContainer" class="detail-section">
       <!-- Vital details will be injected here -->
     </div>
   </div>
   
+  <!-- Bootstrap & AOS JS -->
   <script src="lib/bootstrap.bundle.min.js"></script>
   <script src="lib/aos.js"></script>
   <script>
@@ -99,13 +95,13 @@
     document.addEventListener("DOMContentLoaded", function() {
       var currentLang = localStorage.getItem("lang") || "en";
       
-      // Set page title using localization
+      // Set page title from localization
       var pageTitleEl = document.getElementById("pageTitle");
       if (pageTitleEl) {
         pageTitleEl.textContent = (currentLang === "ar") ? LANG_AR.vitalDetailsTitle : LANG_EN.vitalDetailsTitle;
       }
       
-      // Retrieve selected vital from sessionStorage
+      // Retrieve the selected vital from sessionStorage
       var vitalDataStr = sessionStorage.getItem("selectedVital");
       if (!vitalDataStr) {
         document.getElementById("vitalDetailsContainer").innerHTML =
@@ -146,7 +142,7 @@
         container.appendChild(desc);
       }
       
-      // Render the vital value(s)
+      // Render the vital value
       var valueSection = document.createElement("div");
       if (vital.type === "list" && Array.isArray(vital.value)) {
         // Render each list item as a row with action buttons
@@ -155,12 +151,7 @@
         vital.value.forEach(function(item, index) {
           var li = document.createElement("li");
           li.className = "list-group-item d-flex justify-content-between align-items-center";
-          
-          // Use a span for the text
-          var spanText = document.createElement("span");
-          spanText.className = "item-text";
-          spanText.textContent = item;
-          li.appendChild(spanText);
+          li.textContent = item;
           
           var btnContainer = document.createElement("div");
           // Copy button
@@ -178,7 +169,7 @@
               });
           };
           btnContainer.appendChild(copyBtn);
-          // Delete button
+          // Delete button for list item
           var delBtn = document.createElement("button");
           delBtn.className = "btn btn-danger btn-sm action-btn";
           delBtn.textContent = (currentLang === "ar") ? LANG_AR.delete : LANG_EN.delete;
@@ -190,7 +181,6 @@
             }
           };
           btnContainer.appendChild(delBtn);
-          
           li.appendChild(btnContainer);
           listGroup.appendChild(li);
         });
@@ -207,7 +197,7 @@
         var moreInfoLink = document.createElement("a");
         moreInfoLink.href = vital.more_info;
         moreInfoLink.target = "_blank";
-        moreInfoLink.textContent = (currentLang === "ar") ? LANG_AR.moreInfo : LANG_EN.moreInfo;
+        moreInfoLink.textContent = (currentLang === "ar") ? "مزيد من المعلومات" : "More Info";
         container.appendChild(moreInfoLink);
       }
       
@@ -215,7 +205,7 @@
       var twinInsight = document.createElement("p");
       twinInsight.className = "mt-3 text-muted";
       twinInsight.textContent = (currentLang === "ar")
-        ? "هذه التفاصيل تساعد على الرعاية الوقائية والتنبؤية."
+        ? "هذه البيانات تساعد على الرعاية الوقائية والتنبؤية."
         : "These details help in preventive and predictive care.";
       container.appendChild(twinInsight);
       
@@ -224,7 +214,7 @@
         firebase.analytics().logEvent("vital_details_view", { vitalKey: vital.vital_key });
       }
       
-      // Helper: re-render vital details after deletion or update
+      // Helper function to re-render if item is deleted
       window.renderVitalDetails = function(updatedVital) {
         container.innerHTML = "";
         
@@ -251,10 +241,7 @@
           updatedVital.value.forEach(function(item, idx) {
             var liEl = document.createElement("li");
             liEl.className = "list-group-item d-flex justify-content-between align-items-center";
-            var spanTxt = document.createElement("span");
-            spanTxt.className = "item-text";
-            spanTxt.textContent = item;
-            liEl.appendChild(spanTxt);
+            liEl.textContent = item;
             var btnCnt = document.createElement("div");
             
             var cpyBtn = document.createElement("button");
@@ -299,14 +286,14 @@
           var moreInfoLnk = document.createElement("a");
           moreInfoLnk.href = updatedVital.more_info;
           moreInfoLnk.target = "_blank";
-          moreInfoLnk.textContent = (localStorage.getItem("lang") === "ar") ? LANG_AR.moreInfo : LANG_EN.moreInfo;
+          moreInfoLnk.textContent = (localStorage.getItem("lang") === "ar") ? "مزيد من المعلومات" : "More Info";
           container.appendChild(moreInfoLnk);
         }
         
         var twinTxt = document.createElement("p");
         twinTxt.className = "mt-3 text-muted";
         twinTxt.textContent = (localStorage.getItem("lang") === "ar")
-          ? "هذه التفاصيل تساعد على الرعاية الوقائية والتنبؤية."
+          ? "هذه البيانات تساعد على الرعاية الوقائية والتنبؤية."
           : "These details help in preventive and predictive care.";
         container.appendChild(twinTxt);
       };
