@@ -64,29 +64,30 @@ window.loadVitals = function() {
 
   // Helper: Show More Info as a bottom sheet modal.
   function showMoreInfoDialog(vital) {
-    const closeButtonHTML = currentLang === "ar"
-      ? '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق" style="margin-right:auto;"></button>'
-      : '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="margin-left:auto;"></button>';
-    const modalHtml = `
-      <div class="modal fade" id="moreInfoModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog" style="position: fixed; bottom: 0; margin: 0; width: 100%; min-height:250px; max-height:400px; align-items:flex-start;">
-          <div class="modal-content" style="height:100%;">
-            <div class="modal-header d-flex align-items-center">
-              ${closeButtonHTML}
-              <h5 class="modal-title">${currentLang === "ar" ? LANG_AR.moreInfo : LANG_EN.moreInfo}</h5>
-            </div>
-            <div class="modal-body" style="overflow:auto;">
-              ${vital.more_info}
-            </div>
+  const currentLang = localStorage.getItem("lang") || "en";
+  const vitalName = (VITALS_TRANSLATION[vital.vital_key] && VITALS_TRANSLATION[vital.vital_key][AppSettings.language]) || vital.vital_key;
+  const modalHtml = `
+    <div class="modal fade" id="moreInfoModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog" style="position: fixed; bottom: 0; margin: 0; width: 100%; min-height:250px; max-height:400px; align-items:flex-start;">
+        <div class="modal-content" style="height:100%;">
+          <div class="modal-header d-flex align-items-center justify-content-between">
+            <h5 class="modal-title">
+              ${currentLang === "ar" ? "مزيد من المعلومات لـ" : "More Info for"} ${vitalName}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${currentLang === "ar" ? "إغلاق" : "Close"}"></button>
+          </div>
+          <div class="modal-body" style="overflow:auto;">
+            ${vital.more_info}
           </div>
         </div>
-      </div>`;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    const modalEl = document.getElementById("moreInfoModal");
-    const modalInstance = new bootstrap.Modal(modalEl);
-    modalInstance.show();
-    modalEl.addEventListener('hidden.bs.modal', () => modalEl.remove());
-  }
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  const modalEl = document.getElementById("moreInfoModal");
+  const modalInstance = new bootstrap.Modal(modalEl);
+  modalInstance.show();
+  modalEl.addEventListener('hidden.bs.modal', () => modalEl.remove());
+}
 
   // Helper: Open bottom sheet modal for editing non‑list vitals.
   function openEditModal(vital) {
