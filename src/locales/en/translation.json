@@ -1,0 +1,66 @@
+{
+  "appName": "Unified Health Record",
+  "greeting": {
+    "morning": "Good Morning",
+    "afternoon": "Good Afternoon",
+    "evening": "Good Evening"
+  },
+  "profile": {
+    "healthRecordId": "Health Record ID",
+    "age": "years"
+  },
+  "sections": {
+    "allergies": {
+      "title": "Allergies",
+      "medicine": "Medicine Allergies",
+      "food": "Food Allergies",
+      "material": "Material Allergies",
+      "doctor": "Doctor-Entered Allergies",
+      "noAllergies": "No allergies recorded"
+    },
+    "vitals": {
+      "title": "Vital Signs",
+      "bmi": "Body Mass Index",
+      "bloodPressure": "Blood Pressure",
+      "bloodGlucose": "Blood Glucose",
+      "waist": "Waist Circumference",
+      "weight": "Weight",
+      "height": "Height",
+      "noVitals": "No measurements recorded"
+    },
+    "medications": {
+      "title": "Medications",
+      "current": "Current Medications",
+      "previous": "Previous Medications",
+      "noMedications": "No medications recorded"
+    },
+    "general": {
+      "title": "General Health Information",
+      "bloodType": "Blood Type",
+      "healthConditions": "Health Conditions",
+      "familyHistory": "Family Medical History",
+      "healthCenters": "Assigned Health Center"
+    }
+  },
+  "actions": {
+    "update": "Update",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "back": "Back",
+    "call": "Call",
+    "directions": "Directions"
+  },
+  "settings": {
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "language": "Change Language"
+  },
+  "forms": {
+    "validation": {
+      "required": "This field is required",
+      "success": "Saved successfully"
+    }
+  }
+}

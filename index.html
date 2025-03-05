@@ -1,163 +1,48 @@
 <!DOCTYPE html>
-<html lang="en" id="htmlRoot">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title id="pageTitle">MOH Services - Home</title>
-  
-  <!-- Local Bootstrap CSS -->
-  <link href="lib/bootstrap.min.css" rel="stylesheet" />
-  <!-- Local AOS CSS -->
-  <link href="lib/aos.css" rel="stylesheet" />
-  
-  <style>
-    body {
-      padding-top: 70px;
-      /* Background theming will be applied via AppSettings.theme */
-    }
-    .service-grid {
-      margin-top: 30px;
-    }
-    .service-card {
-      border: none;
-      border-radius: 0.75rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
-      padding: 20px;
-      margin-bottom: 20px;
-      transition: transform 0.2s;
-      background-color: #fff;
-    }
-    .service-card:hover {
-      transform: scale(1.05);
-    }
-    .service-icon {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 10px;
-    }
-    .service-label {
-      font-size: 1rem;
-      font-weight: 600;
-    }
-    /* Language switch button styling using flag icons */
-    #langSwitchBtn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      border: none;
-      background: none;
-      cursor: pointer;
-    }
-  </style>
-  
-  <!-- Load constants and settings before DOM manipulation -->
-  <script src="js/constants.js"></script>
-  <script src="js/settings.js"></script>
-  <!-- Optional: Firebase initialization and TWK helper -->
-  <script src="twk_helper.js"></script>
-  <script src="js/firebaseInit.js"></script>
-  <!-- Local AOS JS -->
-  <script src="lib/aos.js"></script>
-</head>
-<body>
-  <!-- Shared Navigation Bar will be loaded dynamically -->
-  <div id="navbarContainer"></div>
-  
-  <!-- Main Content: Services Grid -->
-  <div class="container service-grid" data-aos="fade-up">
-    <h2 class="text-center mb-4" id="welcomeMessage"></h2>
-    <div class="row">
-      <!-- Unified Health Profile Shortcut (formerly Vitals) -->
-      <div class="col-6 col-md-3">
-        <a href="modern_vitals.html" class="text-decoration-none">
-          <div class="service-card">
-            <!-- Inline SVG icon -->
-            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm1 12H7v-2h2v2zm0-4H7V4h2v4z"/>
-            </svg>
-            <div class="service-label" id="serviceVitalsLabel"></div>
-          </div>
-        </a>
-      </div>
-      <!-- Visits Shortcut -->
-      <div class="col-6 col-md-3">
-        <a href="visitsCalendar.html" class="text-decoration-none">
-          <div class="service-card">
-            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3.5 0a.5.5 0 0 0 0 1H4v1a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V1h.5a.5.5 0 0 0 0-1h-9zM14 4H2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4z"/>
-            </svg>
-            <div class="service-label" id="serviceVisitsLabel"></div>
-          </div>
-        </a>
-      </div>
-      <!-- Appointments Shortcut -->
-      <div class="col-6 col-md-3">
-        <a href="appointmentsWizard.html" class="text-decoration-none">
-          <div class="service-card">
-            <svg class="service-icon" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3.5 0a.5.5 0 0 0 0 1H4v1a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V1h.5a.5.5 0 0 0 0-1h-9zM14 4H2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4z"/>
-            </svg>
-            <div class="service-label" id="serviceAppointmentsLabel"></div>
-          </div>
-        </a>
-      </div>
-      <!-- Settings Shortcut removed -->
-    </div>
-  </div>
-  
-  <!-- Local Bootstrap Bundle with Popper -->
-  <script src="lib/bootstrap.bundle.min.js"></script>
-  
-  <!-- Initialize AOS and set up page content -->
-  <script>
-    AOS.init();
-
-    document.addEventListener("DOMContentLoaded", function() {
-      var currentLang = localStorage.getItem("lang") || "en";
-      document.documentElement.lang = currentLang;
-      document.getElementById("htmlRoot").setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
-      
-      // Set page title and welcome message from constants
-      document.getElementById("pageTitle").textContent = (currentLang === "ar") ? LANG_AR.homeTitle : LANG_EN.homeTitle;
-      document.getElementById("welcomeMessage").textContent = (currentLang === "ar") ? LANG_AR.welcomeMessage : LANG_EN.welcomeMessage;
-      
-      // Set service shortcut labels:
-      // Unified Health Profile label for vitals shortcut
-      document.getElementById("serviceVitalsLabel").textContent = (currentLang === "ar") ? "الملف الصحي الموحد" : "Unified Health Profile";
-      // Visits label
-      document.getElementById("serviceVisitsLabel").textContent = (currentLang === "ar") ? LANG_AR.services.visits : LANG_EN.services.visits;
-      // Appointments label (renamed from vitals item to appointments)
-      document.getElementById("serviceAppointmentsLabel").textContent = (currentLang === "ar") ? "المواعيد" : "Appointments";
-      
-      // Load the shared navbar from navbar.html so that changes are maintained centrally
-      fetch("navbar.html")
-        .then(function(response) { return response.text(); })
-        .then(function(html) {
-          document.getElementById("navbarContainer").innerHTML = html;
-          // Update language switch button in the navbar after loading
-          var langSwitchBtn = document.getElementById("langSwitchBtn");
-          if (langSwitchBtn) {
-            langSwitchBtn.textContent = (currentLang === "en") ? LANG_AR.switchText : LANG_EN.switchText;
-            langSwitchBtn.addEventListener("click", function() {
-              var newLang = (currentLang === "en") ? "ar" : "en";
-              localStorage.setItem("lang", newLang);
-              location.reload();
-            });
-          } else {
-            console.error("Language switch button not found in navbar.");
-          }
-        })
-        .catch(function(error) {
-          console.error("Error loading navbar:", error);
-        });
-      
-      // Apply background theming from AppSettings.theme
-      if (AppSettings && AppSettings.theme) {
-        document.body.classList.add(AppSettings.theme);
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Fix the TWK helper path -->
+    <script src="./twkhelper.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Add Arabic font -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الملف الصحي الموحد - توكلنا</title>
+    <style>
+      body {
+        font-family: 'Tajawal', sans-serif;
+        direction: rtl;
       }
-    });
-  </script>
-</body>
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <!-- Add TWK Mock for development -->
+    <script>
+      // Mock TWK implementation for development
+      window.TWK = {
+        getUserId: () => Promise.resolve({ success: true, result: { data: "1234567890" } }),
+        getUserFullName: () => Promise.resolve({ success: true, result: { data: "عبدالله محمد" } }),
+        getUserGender: () => Promise.resolve({ success: true, result: { data: "male" } }),
+        getUserBirthDate: () => Promise.resolve({ success: true, result: { data: "1990-01-01" } }),
+        getUserBloodType: () => Promise.resolve({ success: true, result: { data: "O+" } }),
+        addDocument: (name, content, reference, category) => Promise.resolve({ success: true }),
+        updateDocument: (name, content, reference, category) => Promise.resolve({ success: true }),
+        deleteDocument: (reference, category) => Promise.resolve({ success: true }),
+        version: "1.8"
+      };
+
+      // Define TWK API base endpoint for testing
+      window.TWKAPIBASE = "https://api.tawakkalna.app";
+    </script>
+    
+    <!-- Check which entry point your setup is using -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

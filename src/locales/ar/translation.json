@@ -1,0 +1,66 @@
+{
+  "appName": "الملف الصحي الموحد",
+  "greeting": {
+    "morning": "صباح الخير",
+    "afternoon": "مساء الخير",
+    "evening": "مساء الخير"
+  },
+  "profile": {
+    "healthRecordId": "رقم الملف الصحي",
+    "age": "سنة"
+  },
+  "sections": {
+    "allergies": {
+      "title": "الحساسية",
+      "medicine": "حساسية الأدوية",
+      "food": "حساسية الأطعمة",
+      "material": "حساسية المواد",
+      "doctor": "حساسية مدخلة من الطبيب",
+      "noAllergies": "لا توجد حساسية مسجلة"
+    },
+    "vitals": {
+      "title": "المؤشرات الحيوية",
+      "bmi": "مؤشر كتلة الجسم",
+      "bloodPressure": "ضغط الدم",
+      "bloodGlucose": "سكر الدم",
+      "waist": "محيط الخصر",
+      "weight": "الوزن",
+      "height": "الطول",
+      "noVitals": "لا توجد قياسات مسجلة"
+    },
+    "medications": {
+      "title": "الأدوية",
+      "current": "الأدوية الحالية",
+      "previous": "الأدوية السابقة",
+      "noMedications": "لا توجد أدوية مسجلة"
+    },
+    "general": {
+      "title": "معلومات صحية عامة",
+      "bloodType": "فصيلة الدم",
+      "healthConditions": "الحالات الصحية",
+      "familyHistory": "التاريخ المرضي للعائلة",
+      "healthCenters": "المركز الصحي المخصص"
+    }
+  },
+  "actions": {
+    "update": "تحديث",
+    "add": "إضافة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ",
+    "back": "رجوع",
+    "call": "اتصال",
+    "directions": "الاتجاهات"
+  },
+  "settings": {
+    "darkMode": "وضع الليل",
+    "lightMode": "وضع النهار",
+    "language": "تغيير اللغة"
+  },
+  "forms": {
+    "validation": {
+      "required": "هذا الحقل مطلوب",
+      "success": "تم الحفظ بنجاح"
+    }
+  }
+}
